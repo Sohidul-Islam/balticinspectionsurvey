@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import AdminLayout from "./admin/layout/AdminLayout";
 import MenuConsole from "./admin/components/MenuConsole";
+import MegaMenuPage from "./admin/pages/MegaMenuPage";
 import Dashboard from "./admin/components/Dashboard";
 import PageBuilder from "./admin/components/PageBuilder";
 import DynamicPage from "./components/DynamicPage";
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="menus" element={<MenuConsole />} />
+            <Route path="menus/mega-menu" element={<MegaMenuPage />} />
             <Route path="pages" element={<PageBuilder />} />
           </Route>
           <Route

@@ -8,6 +8,13 @@ export interface Menu {
   path: string;
 }
 
+export interface MegaMenu {
+  id: number;
+  menuId: number;
+  title: string;
+  path: string;
+}
+
 interface ApiResponse<T> {
   data: T;
   status: boolean;
@@ -70,6 +77,103 @@ export const useUpdateMenu = () => {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["menus"] });
       toast.success(response.message || "Menu updated successfully");
+    },
+  });
+};
+
+// Mega Menu Operations
+export const useMegaMenus = (menuId: number) => {
+  return useQuery<ApiResponse<MegaMenu[]>>({
+    queryKey: ["megaMenus", menuId],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get<ApiResponse<MegaMenu[]>>(
+        `/api/menu/${menuId}/mega-menus`
+      );
+      return data;
+    },
+    enabled: !!menuId,
+  });
+};
+
+export const useMegaMenu = (menuId: number, megaMenuId: number) => {
+  return useQuery<ApiResponse<MegaMenu>>({
+    queryKey: ["megaMenu", menuId, megaMenuId],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get<ApiResponse<MegaMenu>>(
+        `/api/menu/${menuId}/mega-menus/${megaMenuId}`
+      );
+      return data;
+    },
+    enabled: !!menuId && !!megaMenuId,
+  });
+};
+
+export const useCreateMegaMenu = (menuId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<ApiResponse<MegaMenu>, Error, Omit<MegaMenu, "id">>({
+    mutationFn: async (megaMenuData) => {
+      const { data } = await axiosInstance.post<ApiResponse<MegaMenu>>(
+        `/api/menu/${menuId}/mega-menus`,
+        megaMenuData
+      );
+      return data;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["megaMenus", menuId] });
+      toast.success(response.message || "Mega menu created successfully");
+    },
+  });
+};
+
+export const useUpdateMegaMenu = (menuId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<ApiResponse<MegaMenu>, Error, MegaMenu>({
+    mutationFn: async ({ id, ...megaMenuData }) => {
+      const { data } = await axiosInstance.post<ApiResponse<MegaMenu>>(
+        `/api/menu/${menuId}/mega-menus/${id}`,
+        megaMenuData
+      );
+      return data;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["megaMenus", menuId] });
+      toast.success(response.message || "Mega menu updated successfully");
+    },
+  });
+};
+
+export const useDeleteMegaMenu = (menuId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<ApiResponse<void>, Error, number>({
+    mutationFn: async (megaMenuId) => {
+      const { data } = await axiosInstance.delete<ApiResponse<void>>(
+        `/api/menu/${menuId}/mega-menus/${megaMenuId}/delete`
+      );
+      return data;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["megaMenus", menuId] });
+      toast.success(response.message || "Mega menu deleted successfully");
+    },
+  });
+};
+
+export const useDeleteMenu = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<ApiResponse<void>, Error, number>({
+    mutationFn: async (menuId) => {
+      const { data } = await axiosInstance.delete<ApiResponse<void>>(
+        `/api/menu/${menuId}/delete`
+      );
+      return data;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["menus"] });
+      toast.success(response.message || "Menu deleted successfully");
     },
   });
 };
