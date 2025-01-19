@@ -1,31 +1,38 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 import AdminLayout from "./admin/layout/AdminLayout";
-import MenuManager from "./admin/components/MenuManager";
+import MenuConsole from "./admin/components/MenuConsole";
+import Dashboard from "./admin/components/Dashboard";
 import PageBuilder from "./admin/components/PageBuilder";
 import DynamicPage from "./components/DynamicPage";
 import Navbar from "./components/Navbar";
-import FooterManager from "./admin/components/FooterManager";
+
+const queryClient = new QueryClient();
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="menus" element={<MenuManager />} />
-          <Route path="pages" element={<PageBuilder />} />
-          <Route path="footer" element={<FooterManager />} />
-        </Route>
-        <Route
-          path="*"
-          element={
-            <>
-              <Navbar />
-              <DynamicPage />
-            </>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <Toaster position="top-right" />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="menus" element={<MenuConsole />} />
+            <Route path="pages" element={<PageBuilder />} />
+          </Route>
+          <Route
+            path="*"
+            element={
+              <>
+                <Navbar />
+                <DynamicPage />
+              </>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 
