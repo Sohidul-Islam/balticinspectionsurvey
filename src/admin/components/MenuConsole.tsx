@@ -8,8 +8,10 @@ import {
   useMenus,
   useCreateMenu,
   useUpdateMenu,
+  useDeleteMenu,
   type Menu,
 } from "../../services/menuApi";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -99,6 +101,29 @@ const MenuList = styled.div`
   gap: 1.5rem;
 `;
 
+const ActionButtons = styled.div`
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const IconButton = styled(motion.button)`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #636e72;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: #2d3436;
+  }
+`;
+
 const MenuCard = styled(motion.div)`
   background: white;
   padding: 1.5rem;
@@ -106,6 +131,7 @@ const MenuCard = styled(motion.div)`
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
 
   &:hover {
     transform: translateY(-5px);
@@ -153,6 +179,7 @@ const MenuConsole = () => {
   const { data: menus, isLoading: isLoadingMenus } = useMenus();
   const createMenu = useCreateMenu();
   const updateMenu = useUpdateMenu();
+  const deleteMenu = useDeleteMenu();
 
   const {
     register,
@@ -211,6 +238,27 @@ const MenuConsole = () => {
   const handleCancel = () => {
     setSelectedMenu(null);
     reset({ title: "", path: "/" });
+  };
+
+  const handleDelete = async (e: React.MouseEvent, menuId: number) => {
+    e.stopPropagation(); // Prevent menu selection when clicking delete
+    if (window.confirm("Are you sure you want to delete this menu?")) {
+      try {
+        await deleteMenu.mutateAsync(menuId);
+        if (selectedMenu?.id === menuId) {
+          setSelectedMenu(null);
+          reset({ title: "", path: "/" });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const handleEdit = (menu: Menu) => {
+    setSelectedMenu(menu);
+    setValue("title", menu.title);
+    setValue("path", menu.path);
   };
 
   return (
@@ -286,7 +334,6 @@ const MenuConsole = () => {
             (menus?.data || [])?.map((menu) => (
               <MenuCard
                 key={menu?.id}
-                onClick={() => setSelectedMenu(menu)}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
@@ -294,6 +341,22 @@ const MenuConsole = () => {
               >
                 <h3>{menu?.title}</h3>
                 <p style={{ fontFamily: "monospace" }}>{menu?.path}</p>
+                <ActionButtons>
+                  <IconButton
+                    onClick={() => handleEdit(menu)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <FiEdit2 />
+                  </IconButton>
+                  <IconButton
+                    onClick={(e) => handleDelete(e, menu.id)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <FiTrash2 />
+                  </IconButton>
+                </ActionButtons>
               </MenuCard>
             ))
           )}

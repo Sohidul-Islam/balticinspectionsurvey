@@ -8,6 +8,7 @@ import Dashboard from "./admin/components/Dashboard";
 import PageBuilder from "./admin/components/PageBuilder";
 import DynamicPage from "./components/DynamicPage";
 import Navbar from "./components/Navbar";
+import SubMegaMenuPage from "./admin/pages/SubMegaMenuPage";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,10 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path="menus" element={<MenuConsole />} />
             <Route path="menus/mega-menu" element={<MegaMenuPage />} />
+            <Route
+              path="menus/:menuId/mega-menu/:megaMenuId/sub-menus"
+              element={<SubMegaMenuPage />}
+            />
             <Route path="pages" element={<PageBuilder />} />
           </Route>
           <Route

@@ -11,8 +11,16 @@ import {
   useDeleteMegaMenu,
   type MegaMenu,
 } from "../../services/menuApi";
-import { FiPlus, FiEdit2, FiTrash2 } from "react-icons/fi";
+import {
+  FiPlus,
+  FiEdit2,
+  FiTrash2,
+  FiChevronDown,
+  FiList,
+} from "react-icons/fi";
 import { Loader } from "./Loader";
+import { SubMegaMenuEditor } from "./SubMegaMenuEditor";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled(motion.div)`
   background: white;
@@ -88,32 +96,51 @@ const Button = styled(motion.button)`
 
 const MegaMenuList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
 `;
 
 const MegaMenuItem = styled(motion.div)`
-  background: #f8f9fa;
-  padding: 1rem;
-  border-radius: 8px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
   position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .content {
+    padding: 0.5rem;
+  }
 
   h3 {
-    margin: 0 0 0.5rem;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    color: #2d3436;
+    margin: 0 0 0.5rem 0;
   }
 
   p {
-    margin: 0;
     color: #636e72;
     font-family: monospace;
+    font-size: 0.9rem;
+    margin: 0;
   }
 `;
 
 const ActionButtons = styled.div`
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f2f6;
+`;
+
+const EditButtons = styled.div`
   display: flex;
   gap: 0.5rem;
 `;
@@ -127,9 +154,51 @@ const IconButton = styled(motion.button)`
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 
   &:hover {
+    background: #f8f9fa;
     color: #2d3436;
+  }
+
+  &.edit {
+    color: #0984e3;
+    &:hover {
+      background: rgba(9, 132, 227, 0.1);
+    }
+  }
+
+  &.delete {
+    color: #d63031;
+    &:hover {
+      background: rgba(214, 48, 49, 0.1);
+    }
+  }
+`;
+
+const ViewSubMenusButton = styled(motion.button)`
+  padding: 0.8rem 1.2rem;
+  background: linear-gradient(135deg, #0984e3, #00b894);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(9, 132, 227, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+    transform: translateY(-1px);
+  }
+
+  svg {
+    font-size: 1.1rem;
   }
 `;
 
@@ -154,10 +223,12 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
   const [selectedMegaMenu, setSelectedMegaMenu] = useState<MegaMenu | null>(
     null
   );
+  const [expandedMegaMenu, setExpandedMegaMenu] = useState<number | null>(null);
   const { data: megaMenus, isLoading } = useMegaMenus(menuId);
   const createMegaMenu = useCreateMegaMenu(menuId);
   const updateMegaMenu = useUpdateMegaMenu(menuId);
   const deleteMegaMenu = useDeleteMegaMenu(menuId);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -187,7 +258,8 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
     }
   };
 
-  const handleDelete = async (megaMenuId: number) => {
+  const handleDelete = async (e: React.MouseEvent, megaMenuId: number) => {
+    e.stopPropagation();
     if (window.confirm("Are you sure you want to delete this mega menu?")) {
       try {
         await deleteMegaMenu.mutateAsync(megaMenuId);
@@ -197,15 +269,25 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
     }
   };
 
-  const handleEdit = (megaMenu: MegaMenu) => {
+  const handleEdit = (e: React.MouseEvent, megaMenu: MegaMenu) => {
+    e.stopPropagation();
     setSelectedMegaMenu(megaMenu);
     setValue("title", megaMenu.title);
     setValue("path", megaMenu.path);
   };
 
+  const handleMegaMenuClick = (megaMenu: MegaMenu) => {
+    setExpandedMegaMenu(expandedMegaMenu === megaMenu.id ? null : megaMenu.id);
+  };
+
   const handleCancel = () => {
     setSelectedMegaMenu(null);
     reset();
+  };
+
+  const handleViewSubMenus = (e: React.MouseEvent, megaMenu: MegaMenu) => {
+    e.stopPropagation();
+    navigate(`/admin/menus/${menuId}/mega-menu/${megaMenu.id}/sub-menus`);
   };
 
   return (
@@ -280,27 +362,44 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
                 {megaMenus?.data.map((megaMenu) => (
                   <MegaMenuItem
                     key={megaMenu.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
                   >
-                    <h3>{megaMenu.title}</h3>
-                    <p>{megaMenu.path}</p>
+                    <div className="content">
+                      <h3>{megaMenu.title}</h3>
+                      <p>{megaMenu.path}</p>
+                    </div>
+
                     <ActionButtons>
-                      <IconButton
-                        onClick={() => handleEdit(megaMenu)}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
+                      <EditButtons>
+                        <IconButton
+                          className="edit"
+                          onClick={(e) => handleEdit(e, megaMenu)}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          title="Edit"
+                        >
+                          <FiEdit2 />
+                        </IconButton>
+                        <IconButton
+                          className="delete"
+                          onClick={(e) => handleDelete(e, megaMenu.id)}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          title="Delete"
+                        >
+                          <FiTrash2 />
+                        </IconButton>
+                      </EditButtons>
+
+                      <ViewSubMenusButton
+                        onClick={(e) => handleViewSubMenus(e, megaMenu)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        <FiEdit2 />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDelete(megaMenu.id)}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <FiTrash2 />
-                      </IconButton>
+                        <FiList /> Sub Menus
+                      </ViewSubMenusButton>
                     </ActionButtons>
                   </MegaMenuItem>
                 ))}

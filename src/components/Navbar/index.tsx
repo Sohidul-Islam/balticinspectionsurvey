@@ -4,6 +4,12 @@ import Logo from "../../assets/balticlogo.svg?react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
+import {
+  useMenus,
+  useMegaMenus,
+  useSubMegaMenus,
+} from "../../services/menuApi";
+import { Loader } from "../../admin/components/Loader";
 
 const NavContainer = styled.nav<{ scrolled: boolean }>`
   position: fixed;
@@ -112,24 +118,13 @@ const MegaMenu = styled(motion.div)`
   visibility: hidden;
   pointer-events: none;
   transition: all 0.3s ease;
+  z-index: 1000;
 
   ${MenuItem}:hover & {
     opacity: 1;
     visibility: visible;
     pointer-events: all;
     top: 120%;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-    width: 16px;
-    height: 16px;
-    background: white;
-    border-radius: 2px;
   }
 `;
 
@@ -236,66 +231,22 @@ const MobileSubMenu = styled(motion.div)`
   border-left: 2px solid #f1f2f6;
 `;
 
-const menuData = [
-  {
-    id: 1,
-    title: "Our Services",
-    megaMenu: [
-      {
-        title: "Business Assurance",
-        items: [
-          "Assessment, Auditing and Certification",
-          "Assurance and Verification Services",
-          "Digital Trust Assurance",
-        ],
-      },
-      {
-        title: "Connectivity & Products",
-        items: ["Automotive", "Connectivity", "Cybersecurity"],
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "About Us",
-    megaMenu: [
-      {
-        title: "Our Team",
-        items: ["Leadership", "Careers", "Contact"],
-      },
-      {
-        title: "Company Info",
-        items: ["History", "Mission", "Values"],
-      },
-      {
-        title: "test Info",
-        items: ["History", "Mission", "Values"],
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "About Us",
-    megaMenu: [
-      {
-        title: "Our Team",
-        items: ["Leadership", "Careers", "Contact"],
-      },
-      {
-        title: "Company Info",
-        items: ["History", "Mission", "Values"],
-      },
-      {
-        title: "test Info",
-        items: ["History", "Mission", "Values"],
-      },
-    ],
-  },
-];
+const LoaderWrapper = styled.div`
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hoveredMenu, setHoveredMenu] = useState<number | null>(null);
+
+  const { data: menus, isLoading: isLoadingMenus } = useMenus();
+  const { data: megaMenus, isLoading: isLoadingMegaMenus } = useMegaMenus(
+    hoveredMenu || 0
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -306,6 +257,21 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  if (isLoadingMenus) {
+    return (
+      <NavContainer scrolled={scrolled}>
+        <NavContent>
+          <LogoContainer to="/">
+            <Logo />
+          </LogoContainer>
+          <LoaderWrapper>
+            <Loader />
+          </LoaderWrapper>
+        </NavContent>
+      </NavContainer>
+    );
+  }
+
   return (
     <NavContainer scrolled={scrolled}>
       <NavContent>
@@ -314,8 +280,12 @@ const Navbar = () => {
         </LogoContainer>
 
         <MenuContainer>
-          {menuData.map((menu) => (
-            <MenuItem key={menu.id}>
+          {menus?.data.map((menu) => (
+            <MenuItem
+              key={menu.id}
+              onMouseEnter={() => setHoveredMenu(menu.id)}
+              onMouseLeave={() => setHoveredMenu(null)}
+            >
               <MenuTitle
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -323,29 +293,26 @@ const Navbar = () => {
                 {menu.title}
               </MenuTitle>
 
-              {menu.megaMenu && (
-                <MegaMenu>
-                  {menu.megaMenu.map((section, index) => (
-                    <MegaMenuSection key={index}>
-                      <h3>{section.title}</h3>
-                      {section.items.map((item, idx) => (
-                        <SubMenuItem
-                          key={idx}
-                          to={`/${menu.title
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}/${section.title
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}/${item
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`}
-                        >
-                          {item}
-                        </SubMenuItem>
-                      ))}
-                    </MegaMenuSection>
-                  ))}
-                </MegaMenu>
-              )}
+              <AnimatePresence>
+                {hoveredMenu === menu.id && megaMenus?.data && (
+                  <MegaMenu
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {megaMenus.data.map((megaMenu) => (
+                      <MegaMenuSection key={megaMenu.id}>
+                        <h3>{megaMenu.title}</h3>
+                        <SubMegaMenuList
+                          megaMenuId={megaMenu.id}
+                          menuId={menu.id}
+                        />
+                      </MegaMenuSection>
+                    ))}
+                  </MegaMenu>
+                )}
+              </AnimatePresence>
             </MenuItem>
           ))}
         </MenuContainer>
@@ -373,7 +340,7 @@ const Navbar = () => {
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 20 }}
               >
-                {menuData.map((menu) => (
+                {menus?.data.map((menu) => (
                   <MobileMenuItem
                     key={menu.id}
                     initial={{ opacity: 0, x: 20 }}
@@ -414,6 +381,39 @@ const Navbar = () => {
         </AnimatePresence>
       </NavContent>
     </NavContainer>
+  );
+};
+
+// Create a separate component for SubMegaMenus to handle their own loading state
+const SubMegaMenuList = ({
+  menuId,
+  megaMenuId,
+}: {
+  menuId: number;
+  megaMenuId: number;
+}) => {
+  const { data: subMenus, isLoading } = useSubMegaMenus(menuId, megaMenuId);
+
+  if (isLoading) return <Loader />;
+
+  return (
+    <>
+      {subMenus?.data.map((subMenu) => (
+        <SubMenuItem
+          key={subMenu.id}
+          to={subMenu.path}
+          onClick={() => {
+            // Close mobile menu if open
+            const mobileMenu = document.querySelector(".mobile-menu");
+            if (mobileMenu) {
+              mobileMenu.classList.remove("open");
+            }
+          }}
+        >
+          {subMenu.title}
+        </SubMenuItem>
+      ))}
+    </>
   );
 };
 
