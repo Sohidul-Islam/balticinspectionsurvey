@@ -1,6 +1,5 @@
-import { useState } from "react";
 import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMenus, useMegaMenus } from "../../services/menuApi";
 import { SubMegaMenuEditor } from "../components/SubMegaMenuEditor";

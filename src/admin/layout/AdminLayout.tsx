@@ -184,7 +184,7 @@ const AdminLayout = () => {
               {"items" in item ? (
                 <>
                   <NavItemButton
-                    $active={item.items.some(
+                    $active={item?.items?.some(
                       (subItem) => location.pathname === subItem.path
                     )}
                     onClick={() => handleMenuClick(item.text)}
@@ -210,7 +210,7 @@ const AdminLayout = () => {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                       >
-                        {item.items.map((subItem) => (
+                        {item?.items?.map((subItem) => (
                           <SubMenuItem
                             key={subItem.path}
                             to={subItem.path}

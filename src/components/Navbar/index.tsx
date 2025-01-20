@@ -60,6 +60,7 @@ const MenuContainer = styled.div`
   display: flex;
   gap: 2rem;
   align-items: center;
+  position: relative;
 
   @media (max-width: 1024px) {
     display: none;
@@ -101,31 +102,43 @@ const MenuTitle = styled(motion.div)`
   }
 `;
 
-const MegaMenu = styled(motion.div)`
+const MegaMenuContainer = styled(motion.div)`
   position: absolute;
   top: 130%;
   left: 50%;
   transform: translateX(-50%);
+  width: 800px;
   background: white;
   border-radius: 16px;
   box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
   padding: 2rem;
-  min-width: 600px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: all 0.3s ease;
   z-index: 1000;
 
-  ${MenuItem}:hover & {
+  &[data-visible="true"] {
     opacity: 1;
     visibility: visible;
     pointer-events: all;
     top: 120%;
   }
+
+  @media (max-width: 1200px) {
+    width: 600px;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const MegaMenuGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  min-height: 300px;
 `;
 
 const MegaMenuSection = styled.div`
@@ -292,29 +305,33 @@ const Navbar = () => {
               >
                 {menu.title}
               </MenuTitle>
-
-              <AnimatePresence>
-                {hoveredMenu === menu.id && megaMenus?.data && (
-                  <MegaMenu
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {megaMenus.data.map((megaMenu) => (
-                      <MegaMenuSection key={megaMenu.id}>
-                        <h3>{megaMenu.title}</h3>
-                        <SubMegaMenuList
-                          megaMenuId={megaMenu.id}
-                          menuId={menu.id}
-                        />
-                      </MegaMenuSection>
-                    ))}
-                  </MegaMenu>
-                )}
-              </AnimatePresence>
             </MenuItem>
           ))}
+
+          <MegaMenuContainer data-visible={!!hoveredMenu}>
+            <AnimatePresence mode="wait">
+              {hoveredMenu && megaMenus?.data && (
+                <MegaMenuGrid
+                  as={motion.div}
+                  key={hoveredMenu}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {megaMenus.data.map((megaMenu) => (
+                    <MegaMenuSection key={megaMenu.id}>
+                      <h3>{megaMenu.title}</h3>
+                      <SubMegaMenuList
+                        menuId={hoveredMenu}
+                        megaMenuId={megaMenu.id}
+                      />
+                    </MegaMenuSection>
+                  ))}
+                </MegaMenuGrid>
+              )}
+            </AnimatePresence>
+          </MegaMenuContainer>
         </MenuContainer>
 
         <MobileMenuButton
@@ -340,7 +357,7 @@ const Navbar = () => {
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 20 }}
               >
-                {menus?.data.map((menu) => (
+                {menus?.data.map((menu: any) => (
                   <MobileMenuItem
                     key={menu.id}
                     initial={{ opacity: 0, x: 20 }}
@@ -348,7 +365,7 @@ const Navbar = () => {
                     transition={{ delay: 0.2 }}
                   >
                     <MobileMenuTitle>{menu.title}</MobileMenuTitle>
-                    {menu.megaMenu?.map((section) => (
+                    {menu.megaMenu?.map((section: any) => (
                       <MobileSubMenu
                         key={section.title}
                         initial={{ opacity: 0, x: 20 }}
@@ -356,7 +373,7 @@ const Navbar = () => {
                         transition={{ delay: 0.3 }}
                       >
                         <h3>{section.title}</h3>
-                        {section.items.map((item) => (
+                        {section.items.map((item: any) => (
                           <SubMenuItem
                             key={item}
                             to={`/${menu.title
