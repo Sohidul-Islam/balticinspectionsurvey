@@ -8,6 +8,8 @@ import {
   FiLayout,
   FiSettings,
   FiChevronDown,
+  FiFileText,
+  FiEdit2,
 } from "react-icons/fi";
 import { useState } from "react";
 
@@ -153,7 +155,12 @@ const AdminLayout = () => {
         { path: "/admin/menus/mega-menu", text: "Mega Menu" },
       ],
     },
-    { path: "/admin/pages", icon: <FiLayout />, text: "Pages" },
+    {
+      path: "/admin/pages/content",
+      icon: <FiFileText />,
+      text: "Page Content",
+    },
+    { path: "/admin/content", icon: <FiEdit2 />, text: "Content Editor" },
     { path: "/admin/settings", icon: <FiSettings />, text: "Settings" },
   ];
 
