@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Logo from "../../assets/balticlogo.svg?react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import {
   useMenus,
   useMegaMenus,
@@ -203,18 +203,65 @@ const MobileMenuButton = styled(motion.button)`
 `;
 
 const MobileMenu = styled(motion.div)`
-  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  background: white;
+  padding: 2rem;
+  z-index: 1001;
+  overflow-y: auto;
+  height: 100vh;
+  overscroll-behavior: contain;
+`;
 
-  @media (max-width: 1024px) {
-    display: block;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100vh;
-    background: rgba(255, 255, 255, 0.98);
-    padding: 5rem 2rem 2rem;
-    overflow-y: auto;
+const MobileMenuItem = styled(motion.div)`
+  margin-bottom: 1rem;
+`;
+
+const MobileMenuTitle = styled.div`
+  font-size: 1.2rem;
+  color: #2d3436;
+  padding: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+  }
+`;
+
+const MobileMegaMenu = styled(motion.div)`
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid #f1f2f6;
+  overflow: hidden;
+`;
+
+const MobileMegaMenuTitle = styled.div`
+  font-size: 1.1rem;
+  color: #636e72;
+  padding: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
   }
 `;
 
@@ -228,22 +275,6 @@ const MobileMenuOverlay = styled(motion.div)`
   backdrop-filter: blur(5px);
 `;
 
-const MobileMenuItem = styled(motion.div)`
-  margin-bottom: 2rem;
-`;
-
-const MobileMenuTitle = styled.h2`
-  font-size: 1.5rem;
-  color: #2d3436;
-  margin-bottom: 1rem;
-  font-weight: 600;
-`;
-
-const MobileSubMenu = styled(motion.div)`
-  padding-left: 1rem;
-  border-left: 2px solid #f1f2f6;
-`;
-
 const LoaderWrapper = styled.div`
   padding: 2rem;
   display: flex;
@@ -255,10 +286,13 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState<number | null>(null);
+  const [mobileMenuId, setMobileMenuId] = useState<number | null>(null);
+  const [expandedMenu, setExpandedMenu] = useState<number | null>(null);
+  const [expandedMegaMenu, setExpandedMegaMenu] = useState<number | null>(null);
 
   const { data: menus, isLoading: isLoadingMenus } = useMenus();
   const { data: megaMenus, isLoading: isLoadingMegaMenus } = useMegaMenus(
-    hoveredMenu || 0
+    hoveredMenu || mobileMenuId || 0
   );
 
   useEffect(() => {
@@ -269,6 +303,25 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (mobileMenuOpen && (menus?.data?.length || 0) > 0) {
+      setMobileMenuId(menus?.data[0].id || null);
+    } else {
+      setMobileMenuId(null);
+    }
+  }, [mobileMenuOpen, menus?.data]);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileMenuOpen]);
 
   if (isLoadingMenus) {
     return (
@@ -357,39 +410,78 @@ const Navbar = () => {
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 20 }}
               >
-                {menus?.data.map((menu: any) => (
-                  <MobileMenuItem
-                    key={menu.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    <MobileMenuTitle>{menu.title}</MobileMenuTitle>
-                    {menu.megaMenu?.map((section: any) => (
-                      <MobileSubMenu
-                        key={section.title}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 }}
+                {menus?.data.map((menu) => (
+                  <MobileMenuItem key={menu.id}>
+                    <MobileMenuTitle
+                      onClick={() =>
+                        setExpandedMenu(
+                          expandedMenu === menu.id ? null : menu.id
+                        )
+                      }
+                    >
+                      {menu.title}
+                      <motion.div
+                        animate={{ rotate: expandedMenu === menu.id ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
                       >
-                        <h3>{section.title}</h3>
-                        {section.items.map((item: any) => (
-                          <SubMenuItem
-                            key={item}
-                            to={`/${menu.title
-                              .toLowerCase()
-                              .replace(/\s+/g, "-")}/${section.title
-                              .toLowerCase()
-                              .replace(/\s+/g, "-")}/${item
-                              .toLowerCase()
-                              .replace(/\s+/g, "-")}`}
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            {item}
-                          </SubMenuItem>
-                        ))}
-                      </MobileSubMenu>
-                    ))}
+                        <FiChevronDown />
+                      </motion.div>
+                    </MobileMenuTitle>
+
+                    <AnimatePresence>
+                      {expandedMenu === menu.id &&
+                        megaMenus?.data
+                          ?.filter((megaMenu) => megaMenu.menuId === menu.id)
+                          .map((megaMenu) => (
+                            <MobileMegaMenu
+                              key={megaMenu.id}
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <MobileMegaMenuTitle
+                                onClick={() =>
+                                  setExpandedMegaMenu(
+                                    expandedMegaMenu === megaMenu.id
+                                      ? null
+                                      : megaMenu.id
+                                  )
+                                }
+                              >
+                                {megaMenu.title}
+                                <motion.div
+                                  animate={{
+                                    rotate:
+                                      expandedMegaMenu === megaMenu.id
+                                        ? 180
+                                        : 0,
+                                  }}
+                                  transition={{ duration: 0.2 }}
+                                >
+                                  <FiChevronDown />
+                                </motion.div>
+                              </MobileMegaMenuTitle>
+
+                              <AnimatePresence>
+                                {expandedMegaMenu === megaMenu.id && (
+                                  <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                  >
+                                    <SubMegaMenuList
+                                      menuId={menu.id}
+                                      megaMenuId={megaMenu.id}
+                                      isMobile={true}
+                                    />
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </MobileMegaMenu>
+                          ))}
+                    </AnimatePresence>
                   </MobileMenuItem>
                 ))}
               </MobileMenu>
@@ -401,13 +493,16 @@ const Navbar = () => {
   );
 };
 
-// Create a separate component for SubMegaMenus to handle their own loading state
-const SubMegaMenuList = ({
-  menuId,
-  megaMenuId,
-}: {
+interface SubMegaMenuListProps {
   menuId: number;
   megaMenuId: number;
+  isMobile?: boolean;
+}
+
+const SubMegaMenuList: React.FC<SubMegaMenuListProps> = ({
+  menuId,
+  megaMenuId,
+  isMobile = false,
 }) => {
   const { data: subMenus, isLoading } = useSubMegaMenus(menuId, megaMenuId);
 
@@ -419,13 +514,20 @@ const SubMegaMenuList = ({
         <SubMenuItem
           key={subMenu.id}
           to={subMenu.path}
-          onClick={() => {
-            // Close mobile menu if open
-            const mobileMenu = document.querySelector(".mobile-menu");
-            if (mobileMenu) {
-              mobileMenu.classList.remove("open");
-            }
-          }}
+          // onClick={() => {
+          //   if (isMobile) {
+          //     setMobileMenuOpen && setMobileMenuOpen(false);
+          //   }
+          // }}
+          style={
+            isMobile
+              ? {
+                  padding: "0.6rem 0",
+                  fontSize: "0.9rem",
+                  marginBottom: 0,
+                }
+              : undefined
+          }
         >
           {subMenu.title}
         </SubMenuItem>
