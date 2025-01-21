@@ -51,10 +51,10 @@ const Button = styled(motion.button)`
 `;
 
 const AddSectionButton = styled(motion.button)`
-  padding: 0.75rem 1rem;
-  background: white;
-  color: #2d3436;
-  border: 2px solid #e2e8f0;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #74b9ff, #00b894);
+  color: white;
+  border: none;
   border-radius: 8px;
   font-size: 0.9rem;
   cursor: pointer;
@@ -62,25 +62,19 @@ const AddSectionButton = styled(motion.button)`
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
   svg {
     width: 16px;
     height: 16px;
-    color: #4b5563;
+    color: white;
   }
 
   &:hover {
-    background: #f8faff;
-    border-color: #3b82f6;
-    color: #3b82f6;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-
-    svg {
-      color: #3b82f6;
-    }
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }
 
   &:active {
@@ -109,8 +103,8 @@ const SectionTitle = styled.h3`
 
 const ButtonGroup = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
   margin-bottom: 1.5rem;
 `;
 
@@ -455,8 +449,8 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
               key={sectionType.type}
               type="button"
               onClick={() => addSection(sectionType.type)}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <span>{sectionType.icon}</span>
               {sectionType.label}
