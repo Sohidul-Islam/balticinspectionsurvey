@@ -21,6 +21,7 @@ import {
 import { Loader } from "./Loader";
 import { SubMegaMenuEditor } from "./SubMegaMenuEditor";
 import { useNavigate } from "react-router-dom";
+import { PathHelper, PathPreview } from "./MenuConsole";
 
 const Container = styled(motion.div)`
   background: white;
@@ -235,6 +236,7 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -280,6 +282,8 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
     setExpandedMegaMenu(expandedMegaMenu === megaMenu.id ? null : megaMenu.id);
   };
 
+  const currentPath = watch("path");
+
   const handleCancel = () => {
     setSelectedMegaMenu(null);
     reset();
@@ -288,6 +292,20 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
   const handleViewSubMenus = (e: React.MouseEvent, megaMenu: MegaMenu) => {
     e.stopPropagation();
     navigate(`/admin/menus/${menuId}/mega-menu/${megaMenu.id}/sub-menus`);
+  };
+
+  const handlePathChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+
+    // Ensure path starts with /
+    if (!value.startsWith("/")) {
+      value = "/" + value;
+    }
+
+    // Remove spaces and convert to lowercase
+    value = value.replace(/\s+/g, "-").toLowerCase();
+
+    setValue("path", value);
   };
 
   return (
@@ -329,10 +347,20 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
 
               <FormGroup>
                 <Label>Path</Label>
-                <Input {...register("path")} error={!!errors.path} />
+                <Input
+                  {...register("path")}
+                  error={!!errors.path}
+                  placeholder="Enter mega menu path"
+                  onChange={handlePathChange}
+                />
                 {errors.path && (
-                  <ErrorMessage>{errors.path.message}</ErrorMessage>
+                  <ErrorMessage>{errors.path.message as string}</ErrorMessage>
                 )}
+                <PathHelper>
+                  Path should start with / and can contain lowercase letters,
+                  numbers, and hyphens
+                </PathHelper>
+                <PathPreview>Preview: {currentPath}</PathPreview>
               </FormGroup>
 
               <div style={{ display: "flex", gap: "1rem" }}>

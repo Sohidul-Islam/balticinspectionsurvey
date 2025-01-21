@@ -13,6 +13,7 @@ import {
 } from "../../services/menuApi";
 import { FiPlus, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { Loader } from "./Loader";
+import { PathHelper, PathPreview } from "./MenuConsole";
 
 const Container = styled(motion.div)`
   background: #f8f9fa;
@@ -167,10 +168,13 @@ export const SubMegaMenuEditor = ({
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
   });
+
+  const currentPath = watch("path");
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
     try {
@@ -217,6 +221,20 @@ export const SubMegaMenuEditor = ({
     reset();
   };
 
+  const handlePathChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+
+    // Ensure path starts with /
+    if (!value.startsWith("/")) {
+      value = "/" + value;
+    }
+
+    // Remove spaces and convert to lowercase
+    value = value.replace(/\s+/g, "-").toLowerCase();
+
+    setValue("path", value);
+  };
+
   return (
     <Container>
       <Title>
@@ -252,10 +270,20 @@ export const SubMegaMenuEditor = ({
 
               <FormGroup>
                 <Label>Path</Label>
-                <Input {...register("path")} error={!!errors.path} />
+                <Input
+                  {...register("path")}
+                  error={!!errors.path}
+                  placeholder="Enter sub mega menu path"
+                  onChange={handlePathChange}
+                />
                 {errors.path && (
-                  <ErrorMessage>{errors.path.message}</ErrorMessage>
+                  <ErrorMessage>{errors.path.message as string}</ErrorMessage>
                 )}
+                <PathHelper>
+                  Path should start with / and can contain lowercase letters,
+                  numbers, and hyphens
+                </PathHelper>
+                <PathPreview>Preview: {currentPath}</PathPreview>
               </FormGroup>
 
               <div style={{ display: "flex", gap: "1rem" }}>

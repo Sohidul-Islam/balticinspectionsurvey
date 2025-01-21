@@ -158,7 +158,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const PathPreview = styled.div`
+export const PathPreview = styled.div`
   margin-top: 0.5rem;
   padding: 0.5rem;
   background: #f1f2f6;
@@ -168,7 +168,7 @@ const PathPreview = styled.div`
   color: #2d3436;
 `;
 
-const PathHelper = styled.div`
+export const PathHelper = styled.div`
   margin-top: 0.5rem;
   font-size: 0.8rem;
   color: #636e72;

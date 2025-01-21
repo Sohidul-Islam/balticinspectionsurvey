@@ -287,7 +287,6 @@ const PageContentList = () => {
               <ActionButton
                 className="edit"
                 onClick={() => {
-                  // Navigate to edit page with all context
                   window.location.href = `/admin/content/${page.id}`;
                 }}
                 whileHover={{ scale: 1.05 }}
