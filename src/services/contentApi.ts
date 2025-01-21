@@ -22,16 +22,16 @@ interface ApiResponse<T> {
   message: string;
 }
 
-export const useContent = (path: string) => {
+export const useContent = (contentId: string) => {
   return useQuery<ApiResponse<Content>>({
-    queryKey: ["content", path],
+    queryKey: ["content", contentId],
     queryFn: async () => {
-      const { data } = await axiosInstance.get(
-        `/api/content/menu?path=${path}`
+      const { data } = await axiosInstance.get<ApiResponse<Content>>(
+        `/api/content?contentId=${contentId}`
       );
       return data;
     },
-    enabled: !!path,
+    enabled: !!contentId,
   });
 };
 
@@ -78,6 +78,7 @@ export const useDeleteContent = () => {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["content"] });
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
       toast.success(response.message || "Content deleted successfully");
     },
   });

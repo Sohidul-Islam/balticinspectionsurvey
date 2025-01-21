@@ -11,6 +11,7 @@ import Navbar from "./components/Navbar";
 import SubMegaMenuPage from "./admin/pages/SubMegaMenuPage";
 import ContentManagementPage from "./admin/pages/ContentManagementPage";
 import PageContentList from "./admin/pages/PageContentList";
+import ContentEditPage from "./admin/pages/ContentEditPage";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="menus/mega-menu" element={<MegaMenuPage />} />
             <Route path="pages/content" element={<PageContentList />} />
             <Route path="content" element={<ContentManagementPage />} />
+            <Route path="content/:contentId" element={<ContentEditPage />} />
             <Route
               path="menus/:menuId/mega-menu/:megaMenuId/sub-menus"
               element={<SubMegaMenuPage />}

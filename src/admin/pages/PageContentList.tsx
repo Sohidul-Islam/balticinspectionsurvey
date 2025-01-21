@@ -288,7 +288,7 @@ const PageContentList = () => {
                 className="edit"
                 onClick={() => {
                   // Navigate to edit page with all context
-                  window.location.href = `/admin/content?menuId=${selectedMenu}&megaMenuId=${selectedMegaMenu}&subMenuId=${selectedSubMenu}&contentId=${page.id}`;
+                  window.location.href = `/admin/content/${page.id}`;
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

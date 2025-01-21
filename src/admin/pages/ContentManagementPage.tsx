@@ -77,8 +77,8 @@ const ContentManagementPage = () => {
   const updateContent = useUpdateContent();
 
   const handleSave = async (contentData: any) => {
-    if (!selectedMenu || !selectedMegaMenu || !selectedSubMenu) {
-      toast.error("Please select all menu levels");
+    if (!selectedMenu && !selectedMegaMenu && !selectedSubMenu) {
+      toast.error("Please select a menu");
       return;
     }
 
