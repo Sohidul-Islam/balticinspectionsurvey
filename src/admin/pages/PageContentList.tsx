@@ -5,7 +5,7 @@ import { FiEdit2, FiTrash2, FiPlus, FiChevronRight } from "react-icons/fi";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../services/axios";
-import { Content } from "../../services/contentApi";
+import { Content, useDeleteContent } from "../../services/contentApi";
 import { Loader } from "../components/Loader";
 import {
   useMenus,
@@ -163,6 +163,7 @@ const PageContentList = () => {
     selectedMenu || 0,
     selectedMegaMenu || 0
   );
+  const { mutate: deleteContent } = useDeleteContent();
 
   const { data: pages, isLoading: isLoadingPages } = useQuery<Content[]>({
     queryKey: ["pages", selectedMenu, selectedMegaMenu, selectedSubMenu],
@@ -176,14 +177,13 @@ const PageContentList = () => {
       });
       return data.data;
     },
-    enabled: Boolean(selectedMenu && selectedMegaMenu && selectedSubMenu),
+    enabled: Boolean(selectedMenu || selectedMegaMenu || selectedSubMenu),
   });
 
   const handleDelete = async (id: number) => {
     if (window.confirm("Are you sure you want to delete this page content?")) {
       try {
-        await axiosInstance.delete(`/api/content/${id}`);
-        // Invalidate and refetch
+        deleteContent(id);
       } catch (error) {
         console.error("Error deleting page:", error);
       }

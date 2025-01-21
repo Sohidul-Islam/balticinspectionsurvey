@@ -50,9 +50,42 @@ const Button = styled(motion.button)`
   }
 `;
 
-const AddSectionButton = styled(Button)`
-  background: #00b894;
-  margin-bottom: 1rem;
+const AddSectionButton = styled(motion.button)`
+  padding: 0.75rem 1rem;
+  background: white;
+  color: #2d3436;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    color: #4b5563;
+  }
+
+  &:hover {
+    background: #f8faff;
+    border-color: #3b82f6;
+    color: #3b82f6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+
+    svg {
+      color: #3b82f6;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 `;
 
 const SectionEditor = styled.div`
@@ -75,8 +108,9 @@ const SectionTitle = styled.h3`
 `;
 
 const ButtonGroup = styled.div`
-  display: flex;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
 `;
 
@@ -119,10 +153,10 @@ const ListItem = styled.div`
 `;
 
 const sectionTypes = [
-  { type: "hero", label: "Hero Section" },
-  { type: "imageGrid", label: "Image Grid" },
-  { type: "list", label: "List Section" },
-  { type: "text", label: "Text Section" },
+  { type: "hero", label: "Hero Section", icon: "🎯" },
+  { type: "imageGrid", label: "Image Grid", icon: "🖼️" },
+  { type: "list", label: "List Section", icon: "📝" },
+  { type: "text", label: "Text Section", icon: "📄" },
 ];
 
 interface ContentEditorProps {
@@ -424,7 +458,8 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              Add {sectionType.label}
+              <span>{sectionType.icon}</span>
+              {sectionType.label}
             </AddSectionButton>
           ))}
         </ButtonGroup>
