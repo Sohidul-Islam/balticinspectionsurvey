@@ -157,7 +157,7 @@ export const useDeleteMegaMenu = (menuId: number) => {
 
   return useMutation<ApiResponse<void>, Error, number>({
     mutationFn: async (megaMenuId) => {
-      const { data } = await axiosInstance.delete<ApiResponse<void>>(
+      const { data } = await axiosInstance.post<ApiResponse<void>>(
         `/api/menu/${menuId}/mega-menus/${megaMenuId}/delete`
       );
       return data;

@@ -33,6 +33,7 @@ const App = () => {
               element={<SubMegaMenuPage />}
             />
             <Route path="pages" element={<PageBuilder />} />
+            <Route path="pages/:path" element={<DynamicPage />} />
           </Route>
           <Route
             path="*"

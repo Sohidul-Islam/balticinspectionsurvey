@@ -10,7 +10,8 @@ export type HeroSection = {
 export type TextSection = {
   type: "text";
   data: {
-    heading: string;
+    heading?: string;
+    title?: string;
     content: string;
     image?: string;
     position?: "right" | "left";

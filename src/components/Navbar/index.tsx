@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import styled from "styled-components";
 import Logo from "../../assets/balticlogo.svg?react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import {
@@ -350,14 +350,16 @@ const Navbar = () => {
             <MenuItem
               key={menu.id}
               onMouseEnter={() => setHoveredMenu(menu.id)}
-              onMouseLeave={() => setHoveredMenu(null)}
+              // Removed to prevent setting hovered menu to null on mouse leave
             >
-              <MenuTitle
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {menu.title}
-              </MenuTitle>
+              <NavLink to={menu?.path}>
+                <MenuTitle
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {menu.title}
+                </MenuTitle>
+              </NavLink>
             </MenuItem>
           ))}
 
@@ -371,10 +373,13 @@ const Navbar = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
+                  onMouseLeave={() => setHoveredMenu(null)}
                 >
                   {megaMenus.data.map((megaMenu) => (
                     <MegaMenuSection key={megaMenu.id}>
-                      <h3>{megaMenu.title}</h3>
+                      <NavLink to={megaMenu?.path}>
+                        <h3>{megaMenu.title}</h3>
+                      </NavLink>
                       <SubMegaMenuList
                         menuId={hoveredMenu}
                         megaMenuId={megaMenu.id}

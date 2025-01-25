@@ -349,7 +349,7 @@ export const TextSectionContainer = ({
     >
       <TextHeadingWrapper>
         <TextHeading className={isVisible ? "visible" : ""}>
-          {data.heading}
+          {data?.heading || data?.title}
         </TextHeading>
       </TextHeadingWrapper>
 
