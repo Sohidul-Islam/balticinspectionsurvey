@@ -363,6 +363,12 @@ const Navbar = () => {
             </MenuItem>
           ))}
 
+          <NavLink to="/contact">
+            <MenuTitle whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              Contact
+            </MenuTitle>
+          </NavLink>
+
           <MegaMenuContainer data-visible={!!hoveredMenu}>
             <AnimatePresence mode="wait">
               {hoveredMenu && megaMenus?.data && (

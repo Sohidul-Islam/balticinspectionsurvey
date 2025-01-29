@@ -12,6 +12,8 @@ import SubMegaMenuPage from "./admin/pages/SubMegaMenuPage";
 import ContentManagementPage from "./admin/pages/ContentManagementPage";
 import PageContentList from "./admin/pages/PageContentList";
 import ContentEditPage from "./admin/pages/ContentEditPage";
+import Contact from "./pages/Contact";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +37,16 @@ const App = () => {
             <Route path="pages" element={<PageBuilder />} />
             <Route path="pages/:path" element={<DynamicPage />} />
           </Route>
+          <Route
+            path="/contact"
+            element={
+              <>
+                <Navbar />
+                <Contact />
+                {/* <Footer /> */}
+              </>
+            }
+          />
           <Route
             path="*"
             element={
