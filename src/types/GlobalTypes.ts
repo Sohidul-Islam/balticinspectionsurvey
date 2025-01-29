@@ -7,6 +7,18 @@ export type HeroSection = {
   };
 };
 
+export type HeroSectionSlider = {
+  type: "hero";
+  data: {
+    heroImages: {
+      heading: string;
+      subheading: string;
+      image: string;
+      redirectPath: string;
+    }[];
+  };
+};
+
 export type TextSection = {
   type: "text";
   data: {
@@ -34,6 +46,7 @@ export type ListSection = {
   type: "list";
   data: {
     heading: string;
+    title?: string;
     items: string[];
   };
 };

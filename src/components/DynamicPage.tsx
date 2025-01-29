@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useLocation, useParams } from "react-router-dom";
 import {
   HeroSectionContainer,
+  HeroSectionContainerSecondary,
   ImageGridSectionContainer,
   ListSectionContainer,
   TextSectionContainer,
@@ -28,6 +29,7 @@ const Section = styled.section`
 
 const sectionComponents = {
   hero: HeroSectionContainer,
+  heroSlider: HeroSectionContainerSecondary,
   text: TextSectionContainer,
   imageGrid: ImageGridSectionContainer,
   list: ListSectionContainer,
@@ -93,8 +95,9 @@ const DynamicPage = () => {
 
         return sections.map((section: any, key: number) => {
           // Get the corresponding component for the section type
+
           const SectionComponent =
-            sectionComponents[section.type as keyof typeof sectionComponents];
+            sectionComponents[section?.type as keyof typeof sectionComponents];
 
           if (!SectionComponent) {
             console.warn(

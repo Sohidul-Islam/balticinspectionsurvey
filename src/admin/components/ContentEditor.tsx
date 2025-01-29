@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { Section } from "../../services/contentApi";
 import ImageUploader from "./ImageUploader";
+import { TfiLayoutSlider } from "react-icons/tfi";
+import { FaRegImage } from "react-icons/fa";
+import { PiImages, PiList, PiTextT } from "react-icons/pi";
 
 const EditorContainer = styled.div`
   background: white;
@@ -146,11 +149,37 @@ const ListItem = styled.div`
   align-items: center;
 `;
 
+const BannerContainer = styled.div`
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem 0;
+`;
+
+const BannerHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h4 {
+    margin: 0;
+  }
+`;
+
+const HeroImageContainer = styled.div`
+  border: 1px solid #e0e0e0;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+`;
+
 const sectionTypes = [
-  { type: "hero", label: "Hero Section", icon: "🎯" },
-  { type: "imageGrid", label: "Image Grid", icon: "🖼️" },
-  { type: "list", label: "List Section", icon: "📝" },
-  { type: "text", label: "Text Section", icon: "📄" },
+  { type: "heroSlider", label: "Slider Section", icon: <TfiLayoutSlider /> },
+  { type: "hero", label: "Banner Section", icon: <FaRegImage /> },
+  { type: "imageGrid", label: "Image Grid", icon: <PiImages /> },
+  { type: "list", label: "List Section", icon: <PiList /> },
+  { type: "text", label: "Text Section", icon: <PiTextT /> },
 ];
 
 interface ContentEditorProps {
@@ -176,7 +205,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
   };
 
   const addSection = (type: string) => {
-    setSections([...sections, { type, data: {} }]);
+    setSections([...sections, { type, data: { heroImages: [] } }]);
   };
 
   const handleSectionDataChange = (index: number, data: any) => {
@@ -189,63 +218,225 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
     setSections(sections.filter((_, i) => i !== index));
   };
 
+  const addHeroImage = (sectionIndex: number) => {
+    const section = sections[sectionIndex];
+    const heroImages = section.data.heroImages || [];
+    handleSectionDataChange(sectionIndex, {
+      ...section.data,
+      heroImages: [
+        ...heroImages,
+        { image: "", heading: "", subheading: "", redirectPath: "" },
+      ],
+    });
+  };
+
+  const removeHeroImage = (sectionIndex: number, imageIndex: number) => {
+    const section = sections[sectionIndex];
+    const heroImages = section.data.heroImages.filter(
+      (_: any, i: number) => i !== imageIndex
+    );
+    handleSectionDataChange(sectionIndex, {
+      ...section.data,
+      heroImages,
+    });
+  };
+
   const renderSectionEditor = (section: Section, index: number) => {
     switch (section.type) {
-      case "hero":
+      case "heroSlider":
         return (
           <SectionEditor key={index}>
             <SectionHeader>
-              <SectionTitle>Hero Section</SectionTitle>
+              <SectionTitle>Slider Section</SectionTitle>
               <DeleteButton onClick={() => removeSection(index)}>
                 Delete
               </DeleteButton>
             </SectionHeader>
-            <FormGroup>
-              <Label>Heading</Label>
-              <Input
-                type="text"
-                value={section.data.heading || ""}
-                onChange={(e) =>
-                  handleSectionDataChange(index, {
-                    ...section.data,
-                    heading: e.target.value,
-                  })
-                }
-                placeholder="Enter heading"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>Subheading</Label>
-              <Input
-                type="text"
-                value={section.data.subheading || ""}
-                onChange={(e) =>
-                  handleSectionDataChange(index, {
-                    ...section.data,
-                    subheading: e.target.value,
-                  })
-                }
-                placeholder="Enter subheading"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>Background Image</Label>
-              <ImageUploader
-                onImageUpload={(imagePath) =>
-                  handleSectionDataChange(index, {
-                    ...section.data,
-                    image: imagePath,
-                  })
-                }
-                currentImage={section.data.image}
-                onRemove={() =>
-                  handleSectionDataChange(index, {
-                    ...section.data,
-                    image: undefined,
-                  })
-                }
-              />
-            </FormGroup>
+
+            {(section.data.heroImages || []).map(
+              (heroImage: any, imageIndex: number) => (
+                <HeroImageContainer key={imageIndex}>
+                  <SectionHeader>
+                    <h4>Hero Image {imageIndex + 1}</h4>
+                    <DeleteButton
+                      onClick={() => removeHeroImage(index, imageIndex)}
+                    >
+                      Remove Image
+                    </DeleteButton>
+                  </SectionHeader>
+
+                  <FormGroup>
+                    <Label>Background Image</Label>
+                    <ImageUploader
+                      onImageUpload={(imagePath) => {
+                        const newHeroImages = [...section.data.heroImages];
+                        newHeroImages[imageIndex] = {
+                          ...newHeroImages[imageIndex],
+                          image: imagePath,
+                        };
+                        handleSectionDataChange(index, {
+                          ...section.data,
+                          heroImages: newHeroImages,
+                        });
+                      }}
+                      currentImage={heroImage.image}
+                      onRemove={() => {
+                        const newHeroImages = [...section.data.heroImages];
+                        newHeroImages[imageIndex] = {
+                          ...newHeroImages[imageIndex],
+                          image: undefined,
+                        };
+                        handleSectionDataChange(index, {
+                          ...section.data,
+                          heroImages: newHeroImages,
+                        });
+                      }}
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Label>Heading</Label>
+                    <Input
+                      type="text"
+                      value={heroImage.heading || ""}
+                      onChange={(e) => {
+                        const newHeroImages = [...section.data.heroImages];
+                        newHeroImages[imageIndex] = {
+                          ...newHeroImages[imageIndex],
+                          heading: e.target.value,
+                        };
+                        handleSectionDataChange(index, {
+                          ...section.data,
+                          heroImages: newHeroImages,
+                        });
+                      }}
+                      placeholder="Enter heading"
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Label>Subheading</Label>
+                    <Input
+                      type="text"
+                      value={heroImage.subheading || ""}
+                      onChange={(e) => {
+                        const newHeroImages = [...section.data.heroImages];
+                        newHeroImages[imageIndex] = {
+                          ...newHeroImages[imageIndex],
+                          subheading: e.target.value,
+                        };
+                        handleSectionDataChange(index, {
+                          ...section.data,
+                          heroImages: newHeroImages,
+                        });
+                      }}
+                      placeholder="Enter subheading"
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Label>Redirect Path</Label>
+                    <Input
+                      type="text"
+                      value={heroImage.redirectPath || ""}
+                      onChange={(e) => {
+                        const newHeroImages = [...section.data.heroImages];
+                        newHeroImages[imageIndex] = {
+                          ...newHeroImages[imageIndex],
+                          redirectPath: e.target.value,
+                        };
+                        handleSectionDataChange(index, {
+                          ...section.data,
+                          heroImages: newHeroImages,
+                        });
+                      }}
+                      placeholder="Enter redirect path (e.g., /products)"
+                    />
+                  </FormGroup>
+                </HeroImageContainer>
+              )
+            )}
+
+            <Button type="button" onClick={() => addHeroImage(index)}>
+              Add Hero Image
+            </Button>
+          </SectionEditor>
+        );
+      case "hero":
+        return (
+          <SectionEditor key={index}>
+            <SectionHeader>
+              <SectionTitle>Banner Section</SectionTitle>
+              <DeleteButton onClick={() => removeSection(index)}>
+                Delete
+              </DeleteButton>
+            </SectionHeader>
+
+            <HeroImageContainer>
+              <FormGroup>
+                <Label>Background Image</Label>
+                <ImageUploader
+                  onImageUpload={(imagePath) => {
+                    handleSectionDataChange(index, {
+                      ...section.data,
+                      image: imagePath,
+                    });
+                  }}
+                  currentImage={section.data.image}
+                  onRemove={() => {
+                    handleSectionDataChange(index, {
+                      ...section.data,
+                      image: undefined,
+                    });
+                  }}
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <Label>Heading</Label>
+                <Input
+                  type="text"
+                  value={section.data.heading || ""}
+                  onChange={(e) => {
+                    handleSectionDataChange(index, {
+                      ...section.data,
+                      heading: e.target.value,
+                    });
+                  }}
+                  placeholder="Enter heading"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <Label>Subheading</Label>
+                <Input
+                  type="text"
+                  value={section.data.subheading || ""}
+                  onChange={(e) => {
+                    handleSectionDataChange(index, {
+                      ...section.data,
+                      subheading: e.target.value,
+                    });
+                  }}
+                  placeholder="Enter subheading"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <Label>Redirect Path</Label>
+                <Input
+                  type="text"
+                  value={section.data.redirectPath || ""}
+                  onChange={(e) => {
+                    handleSectionDataChange(index, {
+                      ...section.data,
+                      redirectPath: e.target.value,
+                    });
+                  }}
+                  placeholder="Enter redirect path (e.g., /products)"
+                />
+              </FormGroup>
+            </HeroImageContainer>
           </SectionEditor>
         );
 

@@ -77,18 +77,23 @@ const ContentManagementPage = () => {
   const updateContent = useUpdateContent();
 
   const handleSave = async (contentData: any) => {
-    if (!selectedMenu || !selectedMegaMenu || !selectedSubMenu) {
-      toast.error("Please select all menu levels");
+    if (!selectedMenu && !selectedMegaMenu && !selectedSubMenu) {
+      toast.error("Please select a menu level");
       return;
     }
 
     try {
-      await createContent.mutateAsync({
+      const result = await createContent.mutateAsync({
         ...contentData,
         menuId: selectedMenu,
         megaMenuId: selectedMegaMenu,
         subMegaMenuId: selectedSubMenu,
       });
+
+      // Update sections state with the saved content
+      if (result.data?.sections) {
+        setSections(result.data.sections);
+      }
     } catch (error) {
       console.error("Error saving content:", error);
     }

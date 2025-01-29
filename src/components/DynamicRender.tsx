@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import {
+  HeroSectionSlider,
   type HeroSection,
   type ImageGridSection,
   type ListSection,
   type TextSection,
 } from "../types/GlobalTypes";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import "swiper/swiper-bundle.css";
 import {
   Description,
   Image,
@@ -15,6 +18,9 @@ import {
   overlayVariants,
   titleVariants,
 } from "../views/UnderDevelopment/Gallery";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { NavLink } from "react-router-dom";
 
 export const ServiceCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.2);
@@ -121,6 +127,42 @@ const HeroSubtitle = styled(motion.p)`
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 `;
 
+// hero slider
+
+const HeroSliderImage = styled(motion.img)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const HeroSliderWrapper = styled(motion.div)`
+  position: relative;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 0, 0, 0.4)
+    );
+    z-index: 1;
+  }
+`;
+
 const TextWrapper = styled(motion.section)`
   max-width: 1200px;
   margin: 4rem auto;
@@ -188,11 +230,11 @@ const ImageContainer = styled(motion.div)`
   }
 `;
 
-const TextHeadingWrapper = styled.div`
+export const TextHeadingWrapper = styled.div`
   margin-bottom: 2rem;
 `;
 
-const TextHeading = styled(motion.h2)`
+export const TextHeading = styled(motion.h2)`
   font-size: clamp(2rem, 3vw, 2.5rem);
   font-weight: 700;
   color: #2d3436;
@@ -333,6 +375,84 @@ export const HeroSectionContainer = ({
   </HeroWrapper>
 );
 
+export const HeroSectionContainerSecondary = ({
+  data,
+}: {
+  data: HeroSectionSlider["data"];
+}) => (
+  <Swiper
+    modules={[Autoplay, Navigation, Pagination]}
+    spaceBetween={0}
+    slidesPerView={1}
+    navigation
+    pagination={{ clickable: true }}
+    autoplay={{
+      delay: 5000,
+      disableOnInteraction: false,
+    }}
+    loop={true}
+  >
+    {data.heroImages.map((banner, key) => (
+      <SwiperSlide key={key}>
+        <HeroSliderWrapper
+          initial="hidden"
+          // className="absolute"
+          animate="visible"
+          variants={fadeInUp}
+        >
+          <HeroSliderImage
+            src={banner.image}
+            alt="Hero"
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.8 }}
+          />
+          <HeroContent>
+            <HeroTitle
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              {banner.heading}
+            </HeroTitle>
+            <NavLink
+              to={banner?.redirectPath || "#"}
+              className="group relative inline-block text-white hover:text-white"
+            >
+              <HeroSubtitle
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                <span
+                  className="
+      inline-block
+      transition-all
+      duration-300
+      group-hover:translate-y-[-2px]
+      group-hover:opacity-90
+      after:absolute
+      after:bottom-0
+      after:left-0
+      after:h-[2px]
+      after:w-0
+      after:bg-white
+      after:transition-all
+      after:duration-300
+      group-hover:after:w-full
+    "
+                >
+                  {banner.subheading}
+                </span>
+              </HeroSubtitle>
+            </NavLink>
+          </HeroContent>
+        </HeroSliderWrapper>
+      </SwiperSlide>
+    ))}
+  </Swiper>
+);
+
 export const TextSectionContainer = ({
   data,
 }: {
@@ -420,7 +540,7 @@ export const ImageGridSectionContainer = ({
         </ImageCard>
       ))} */}
 
-      {data.images.map((image, index) =>
+      {data?.images?.map((image, index) =>
         variant === "primary" ? (
           <ImageCard
             key={index}
@@ -473,7 +593,11 @@ export const ListSectionContainer = ({
     viewport={{ once: true }}
     variants={staggerChildren}
   >
-    <TextHeading>{data.heading}</TextHeading>
+    <TextHeadingWrapper>
+      <TextHeading className="visible">
+        {data.heading || data?.title}
+      </TextHeading>
+    </TextHeadingWrapper>
     <ListContainer>
       {data.items.map((item, index) => (
         <ListItem key={index} variants={fadeInUp} whileHover={{ x: 10 }}>

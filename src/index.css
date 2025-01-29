@@ -61,6 +61,21 @@ body {
   gap: 1.5rem;
 }
 
+.swiper-button-prev {
+  color: white !important;
+}
+.swiper-button-next {
+  color: white !important;
+}
+
+.swiper-pagination-bullet {
+  background-color: white !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: white !important;
+}
+
 .list-section ul {
   list-style: disc;
   padding-left: 1.25rem;

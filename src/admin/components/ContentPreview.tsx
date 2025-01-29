@@ -135,14 +135,26 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({
 
   const renderSectionPreview = (section: Section) => {
     switch (section.type) {
+      case "heroSlider":
+        return (
+          <>
+            {section.data.heroImages.map((heroImage: any, index: number) => (
+              <div key={index}>
+                <ImagePreview src={getImageUrl(heroImage.image)} alt="Hero" />
+                <h4>{heroImage.heading}</h4>
+                <p>{heroImage.subheading}</p>
+              </div>
+            ))}
+          </>
+        );
       case "hero":
         return (
           <>
-            <h3>{section.data.heading}</h3>
-            <p>{section.data.subheading}</p>
-            {section.data.image && (
+            <div>
               <ImagePreview src={getImageUrl(section.data.image)} alt="Hero" />
-            )}
+              <h4>{section.data.heading}</h4>
+              <p>{section.data.subheading}</p>
+            </div>
           </>
         );
 
