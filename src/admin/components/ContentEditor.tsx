@@ -6,7 +6,7 @@ import ImageUploader from "./ImageUploader";
 import { TfiLayoutSlider } from "react-icons/tfi";
 import { FaRegImage } from "react-icons/fa";
 import { PiImages, PiList, PiTextT } from "react-icons/pi";
-import { GiGalley } from "react-icons/gi";
+
 import { MdMiscellaneousServices } from "react-icons/md";
 
 const EditorContainer = styled.div`

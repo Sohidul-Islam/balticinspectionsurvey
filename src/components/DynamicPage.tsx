@@ -13,6 +13,7 @@ import Footer from "./Footer";
 import axiosInstance from "../services/axios";
 import { Loader } from "../admin/components/Loader";
 import { useQuery } from "@tanstack/react-query";
+import ImageGridSection from "./ImageGridSection";
 
 const PageContainer = styled.div`
   padding-top: 82px;
@@ -31,7 +32,7 @@ export const sectionComponents = {
   hero: HeroSectionContainer,
   heroSlider: HeroSectionContainerSecondary,
   text: TextSectionContainer,
-  imageGrid: ImageGridSectionContainer,
+  imageGrid: ImageGridSection,
   services: ImageGridSectionContainer,
   list: ListSectionContainer,
 };
