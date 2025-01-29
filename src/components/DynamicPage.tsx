@@ -27,7 +27,7 @@ const Section = styled.section`
   margin-bottom: 3rem;
 `;
 
-const sectionComponents = {
+export const sectionComponents = {
   hero: HeroSectionContainer,
   heroSlider: HeroSectionContainerSecondary,
   text: TextSectionContainer,

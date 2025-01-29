@@ -4,6 +4,7 @@ export type HeroSection = {
     image: string;
     heading: string;
     subheading: string;
+    redirectPath: string;
   };
 };
 

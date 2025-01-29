@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
@@ -15,6 +15,8 @@ import {
 import { Loader } from "../components/Loader";
 import ContentEditor from "../components/ContentEditor";
 import ContentPreview from "../components/ContentPreview";
+import ContentPreviewSecondary from "../components/ContentPreviewSecondary";
+import { useLocation, useNavigate } from "react-router";
 
 const Container = styled.div`
   display: grid;
@@ -62,7 +64,8 @@ const ContentManagementPage = () => {
   const [selectedMegaMenu, setSelectedMegaMenu] = useState<number | null>(null);
   const [selectedSubMenu, setSelectedSubMenu] = useState<number | null>(null);
   const [sections, setSections] = useState<Section[]>([]);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [contentId, setContentId] = useState<number | null>(null);
+  // const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   const { data: menus, isLoading: isLoadingMenus } = useMenus();
   const { data: megaMenus, isLoading: isLoadingMegaMenus } = useMegaMenus(
@@ -76,6 +79,8 @@ const ContentManagementPage = () => {
   const createContent = useCreateContent();
   const updateContent = useUpdateContent();
 
+  const resetData = useRef<any>(null);
+
   const handleSave = async (contentData: any) => {
     if (!selectedMenu && !selectedMegaMenu && !selectedSubMenu) {
       toast.error("Please select a menu level");
@@ -83,15 +88,39 @@ const ContentManagementPage = () => {
     }
 
     try {
-      const result = await createContent.mutateAsync({
-        ...contentData,
-        menuId: selectedMenu,
-        megaMenuId: selectedMegaMenu,
-        subMegaMenuId: selectedSubMenu,
-      });
+      const menuSelection = {
+        menuId: selectedMenu ? selectedMenu : undefined,
+        megaMenuId: selectedMegaMenu ? selectedMegaMenu : undefined,
+        subMegaMenuId: selectedSubMenu ? selectedSubMenu : undefined,
+      };
+
+      // Adjust the values based on the conditions
+      if (selectedSubMenu) {
+        menuSelection.menuId = undefined;
+        menuSelection.megaMenuId = undefined;
+      } else if (selectedMegaMenu) {
+        menuSelection.menuId = undefined;
+        menuSelection.subMegaMenuId = undefined;
+      } else if (selectedMenu) {
+        menuSelection.megaMenuId = undefined;
+        menuSelection.subMegaMenuId = undefined;
+      }
+
+      const result = contentId
+        ? await updateContent.mutateAsync({
+            id: contentId,
+            ...contentData,
+            ...menuSelection,
+          })
+        : await createContent.mutateAsync({
+            ...contentData,
+            ...menuSelection,
+          });
+
+      setContentId(result.data.id);
 
       // Update sections state with the saved content
-      if (result.data?.sections) {
+      if (result.status) {
         setSections(result.data.sections);
       }
     } catch (error) {
@@ -105,7 +134,6 @@ const ContentManagementPage = () => {
   };
 
   const handleEdit = (index: number) => {
-    setEditingIndex(index);
     // Scroll to editor
     document.querySelector(".content-editor")?.scrollIntoView({
       behavior: "smooth",
@@ -132,6 +160,8 @@ const ContentManagementPage = () => {
                 setSelectedMenu(Number(e.target.value) || null);
                 setSelectedMegaMenu(null);
                 setSelectedSubMenu(null);
+                setContentId(null);
+                resetData.current?.resetSection();
               }}
             >
               <option value="">Select Menu</option>
@@ -147,6 +177,8 @@ const ContentManagementPage = () => {
               onChange={(e) => {
                 setSelectedMegaMenu(Number(e.target.value) || null);
                 setSelectedSubMenu(null);
+                setContentId(null);
+                resetData.current?.resetSection();
               }}
               disabled={!selectedMenu}
             >
@@ -160,9 +192,11 @@ const ContentManagementPage = () => {
 
             <Select
               value={selectedSubMenu || ""}
-              onChange={(e) =>
-                setSelectedSubMenu(Number(e.target.value) || null)
-              }
+              onChange={(e) => {
+                setSelectedSubMenu(Number(e.target.value) || null);
+                setContentId(null);
+                resetData.current?.resetSection();
+              }}
               disabled={!selectedMegaMenu}
             >
               <option value="">Select Sub Menu</option>
@@ -178,15 +212,16 @@ const ContentManagementPage = () => {
         <div className="content-editor">
           <ContentEditor
             onSave={handleSave}
+            resetData={resetData}
             initialContent={{
               title: "",
-              sections: editingIndex !== null ? [sections[editingIndex]] : [],
+              sections: [],
             }}
           />
         </div>
       </div>
 
-      <ContentPreview
+      <ContentPreviewSecondary
         sections={sections}
         onReorder={handleReorder}
         onEdit={handleEdit}

@@ -184,6 +184,7 @@ const sectionTypes = [
 
 interface ContentEditorProps {
   onSave: (content: { title: string; sections: Section[] }) => void;
+  resetData?: React.MutableRefObject<any>;
   initialContent?: {
     title: string;
     sections: Section[];
@@ -193,6 +194,7 @@ interface ContentEditorProps {
 const ContentEditor: React.FC<ContentEditorProps> = ({
   onSave,
   initialContent,
+  resetData,
 }) => {
   const [title, setTitle] = useState(initialContent?.title || "");
   const [sections, setSections] = useState<Section[]>(
@@ -205,8 +207,18 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
   };
 
   const addSection = (type: string) => {
-    setSections([...sections, { type, data: { heroImages: [] } }]);
+    setSections([{ type, data: {} }]);
+    // setSections([...sections, { type, data: {} }]);
   };
+
+  if (resetData) {
+    resetData.current = {
+      resetSection: () => {
+        setSections([]);
+        setTitle("");
+      },
+    };
+  }
 
   const handleSectionDataChange = (index: number, data: any) => {
     const newSections = [...sections];

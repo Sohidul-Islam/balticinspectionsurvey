@@ -364,13 +364,45 @@ export const HeroSectionContainer = ({
       >
         {data.heading}
       </HeroTitle>
-      <HeroSubtitle
+      {/* <HeroSubtitle
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.6 }}
       >
         {data.subheading}
-      </HeroSubtitle>
+      </HeroSubtitle> */}
+
+      <NavLink
+        to={data?.redirectPath || "#"}
+        className="group relative inline-block text-white hover:text-white"
+      >
+        <HeroSubtitle
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
+          <span
+            className="
+      inline-block
+      transition-all
+      duration-300
+      group-hover:translate-y-[-2px]
+      group-hover:opacity-90
+      after:absolute
+      after:bottom-0
+      after:left-0
+      after:h-[2px]
+      after:w-0
+      after:bg-white
+      after:transition-all
+      after:duration-300
+      group-hover:after:w-full
+    "
+          >
+            {data.subheading}
+          </span>
+        </HeroSubtitle>
+      </NavLink>
     </HeroContent>
   </HeroWrapper>
 );

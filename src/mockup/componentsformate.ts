@@ -10,6 +10,7 @@ export const demoOfRender: DemoRender = {
           "https://images.unsplash.com/photo-1521791136064-7986c2920216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
         heading: "Welcome to Our Services",
         subheading: "Explore what we offer",
+        redirectPath: "/services",
       },
     },
     {
