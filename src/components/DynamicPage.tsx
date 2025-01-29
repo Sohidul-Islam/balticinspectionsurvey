@@ -32,6 +32,7 @@ export const sectionComponents = {
   heroSlider: HeroSectionContainerSecondary,
   text: TextSectionContainer,
   imageGrid: ImageGridSectionContainer,
+  services: ImageGridSectionContainer,
   list: ListSectionContainer,
 };
 

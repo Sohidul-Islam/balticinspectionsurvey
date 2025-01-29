@@ -564,7 +564,7 @@ export const ImageGridSectionContainer = ({
     viewport={{ once: true }}
     variants={staggerChildren}
   >
-    <TextHeading>{data.caption}</TextHeading>
+    <TextHeading>{data.caption || data?.title}</TextHeading>
     <ImageGrid>
       {/* {data.images.map((image, index) => (
         <ImageCard key={index} variants={fadeInUp} whileHover={{ y: -10 }}>
@@ -591,7 +591,10 @@ export const ImageGridSectionContainer = ({
                 {image.title}
               </Title>
               {image.description && (
-                <Description className="!text-white" variants={titleVariants}>
+                <Description
+                  className="!text-white line-clamp-1 text-ellipsis"
+                  variants={titleVariants}
+                >
                   {image.description}
                 </Description>
               )}
@@ -606,7 +609,7 @@ export const ImageGridSectionContainer = ({
           >
             <img src={image.src} alt={image.title} />
             <h4>{image.title}</h4>
-            <p>{image.description}</p>
+            <p className="line-clamp-2 text-ellipsis">{image.description}</p>
           </ServiceCard>
         )
       )}

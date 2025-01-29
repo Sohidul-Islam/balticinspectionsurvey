@@ -40,6 +40,7 @@ export type ImageGridSection = {
       description: string;
     }[];
     caption: string;
+    title?: string;
   };
 };
 

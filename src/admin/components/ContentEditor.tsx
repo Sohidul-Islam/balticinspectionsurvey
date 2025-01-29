@@ -6,6 +6,8 @@ import ImageUploader from "./ImageUploader";
 import { TfiLayoutSlider } from "react-icons/tfi";
 import { FaRegImage } from "react-icons/fa";
 import { PiImages, PiList, PiTextT } from "react-icons/pi";
+import { GiGalley } from "react-icons/gi";
+import { MdMiscellaneousServices } from "react-icons/md";
 
 const EditorContainer = styled.div`
   background: white;
@@ -174,12 +176,39 @@ const HeroImageContainer = styled.div`
   border-radius: 8px;
 `;
 
+const ServiceContainer = styled.div`
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: #f9f9f9;
+`;
+
+const ServiceHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+
+  h4 {
+    margin: 0;
+    color: #333;
+  }
+`;
+
 const sectionTypes = [
   { type: "heroSlider", label: "Slider Section", icon: <TfiLayoutSlider /> },
   { type: "hero", label: "Banner Section", icon: <FaRegImage /> },
   { type: "imageGrid", label: "Image Grid", icon: <PiImages /> },
   { type: "list", label: "List Section", icon: <PiList /> },
   { type: "text", label: "Text Section", icon: <PiTextT /> },
+  {
+    type: "services",
+    label: "Services Section",
+    icon: <MdMiscellaneousServices />,
+  },
 ];
 
 interface ContentEditorProps {
@@ -623,6 +652,145 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                 }
                 placeholder="Enter section content"
               />
+            </FormGroup>
+          </SectionEditor>
+        );
+
+      case "services":
+        return (
+          <SectionEditor key={index}>
+            <SectionHeader>
+              <SectionTitle>Services Section</SectionTitle>
+              <DeleteButton onClick={() => removeSection(index)}>
+                Delete
+              </DeleteButton>
+            </SectionHeader>
+
+            <FormGroup>
+              <Label>Section Title</Label>
+              <Input
+                type="text"
+                value={section.data.title || ""}
+                onChange={(e) =>
+                  handleSectionDataChange(index, {
+                    ...section.data,
+                    title: e.target.value,
+                  })
+                }
+                placeholder="Enter section title"
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label>Services</Label>
+              <Button
+                type="button"
+                onClick={() =>
+                  handleSectionDataChange(index, {
+                    ...section.data,
+                    images: [
+                      ...(section.data.images || []),
+                      {
+                        src: "",
+                        title: "",
+                        description: "",
+                      },
+                    ],
+                  })
+                }
+              >
+                Add Service
+              </Button>
+
+              {(section.data.images || []).map(
+                (service: any, serviceIndex: number) => (
+                  <ServiceContainer key={serviceIndex}>
+                    <ServiceHeader>
+                      <h4>Service {serviceIndex + 1}</h4>
+                      <DeleteButton
+                        onClick={() => {
+                          const newServices = [...(section.data.images || [])];
+                          newServices.splice(serviceIndex, 1);
+                          handleSectionDataChange(index, {
+                            ...section.data,
+                            images: newServices,
+                          });
+                        }}
+                      >
+                        Remove
+                      </DeleteButton>
+                    </ServiceHeader>
+
+                    <FormGroup>
+                      <Label>Service Title</Label>
+                      <Input
+                        type="text"
+                        value={service.title || ""}
+                        onChange={(e) => {
+                          const newServices = [...(section.data.images || [])];
+                          newServices[serviceIndex] = {
+                            ...service,
+                            title: e.target.value,
+                          };
+                          handleSectionDataChange(index, {
+                            ...section.data,
+                            images: newServices,
+                          });
+                        }}
+                        placeholder="Enter service title"
+                      />
+                    </FormGroup>
+
+                    <FormGroup>
+                      <Label>Description (Optional)</Label>
+                      <TextArea
+                        value={service.description || ""}
+                        onChange={(e) => {
+                          const newServices = [...(section.data.images || [])];
+                          newServices[serviceIndex] = {
+                            ...service,
+                            description: e.target.value,
+                          };
+                          handleSectionDataChange(index, {
+                            ...section.data,
+                            images: newServices,
+                          });
+                        }}
+                        placeholder="Enter service description"
+                      />
+                    </FormGroup>
+
+                    <FormGroup>
+                      <Label>Service Image</Label>
+                      <ImageUploader
+                        onImageUpload={(imagePath) => {
+                          const newServices = [...(section.data.images || [])];
+                          newServices[serviceIndex] = {
+                            ...service,
+                            src: imagePath,
+                          };
+                          handleSectionDataChange(index, {
+                            ...section.data,
+                            images: newServices,
+                          });
+                        }}
+                        currentImage={service.src}
+                        onRemove={() => {
+                          const newServices = [...(section.data.images || [])];
+                          newServices[serviceIndex] = {
+                            ...service,
+                            src: undefined,
+                          };
+                          handleSectionDataChange(index, {
+                            ...section.data,
+                            images: newServices,
+                          });
+                        }}
+                      />
+                    </FormGroup>
+                  </ServiceContainer>
+                )
+              )}
             </FormGroup>
           </SectionEditor>
         );
