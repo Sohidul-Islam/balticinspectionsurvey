@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { useSubmitInquiry } from "../../hooks/useInquiry";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -15,10 +16,27 @@ const ContactPage = () => {
     agreeToTerms: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { mutate: submitInquiry, isPending } = useSubmitInquiry();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+
+    submitInquiry(formData, {
+      onSuccess: () => {
+        // Reset form
+        setFormData({
+          inquiryType: "",
+          firstName: "",
+          lastName: "",
+          email: "",
+          companyName: "",
+          jobTitle: "",
+          phone: "",
+          message: "",
+          agreeToTerms: false,
+        });
+      },
+    });
   };
 
   return (
@@ -205,9 +223,17 @@ const ContactPage = () => {
               </FormGroup>
             </FormGrid>
 
-            <SubmitButton type="submit">
-              Send Message
-              <ButtonIcon className="fas fa-paper-plane" />
+            <SubmitButton type="submit" disabled={isPending}>
+              {isPending ? (
+                <>
+                  <LoadingSpinner /> Sending...
+                </>
+              ) : (
+                <>
+                  Send Message
+                  <ButtonIcon className="fas fa-paper-plane" />
+                </>
+              )}
             </SubmitButton>
           </FormContainer>
         </FormSection>
@@ -483,6 +509,24 @@ const ButtonIcon = styled.i`
 
   ${SubmitButton}:hover & {
     transform: translateX(4px);
+  }
+`;
+
+const LoadingSpinner = styled.div`
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 

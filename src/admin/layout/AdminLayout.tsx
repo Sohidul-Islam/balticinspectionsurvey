@@ -10,6 +10,7 @@ import {
   FiChevronDown,
   FiFileText,
   FiEdit2,
+  FiMessageSquare,
 } from "react-icons/fi";
 import { useState } from "react";
 
@@ -161,6 +162,7 @@ const AdminLayout = () => {
       text: "Page Content",
     },
     { path: "/admin/content", icon: <FiEdit2 />, text: "Content Editor" },
+    { path: "/admin/inquiry", icon: <FiMessageSquare />, text: "Inquiry" },
     { path: "/admin/settings", icon: <FiSettings />, text: "Settings" },
   ];
 

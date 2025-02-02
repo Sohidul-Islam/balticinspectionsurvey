@@ -14,7 +14,8 @@ import PageContentList from "./admin/pages/PageContentList";
 import ContentEditPage from "./admin/pages/ContentEditPage";
 import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
-
+import InquiryManagement from "./admin/components/InquiryManagement";
+import { footerData } from "./mockup/componentsformate";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
         <Routes>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path="inquiry" element={<InquiryManagement />} />
             <Route path="menus" element={<MenuConsole />} />
             <Route path="menus/mega-menu" element={<MegaMenuPage />} />
             <Route path="pages/content" element={<PageContentList />} />
@@ -43,7 +45,7 @@ const App = () => {
               <>
                 <Navbar />
                 <Contact />
-                {/* <Footer /> */}
+                <Footer data={footerData} />
               </>
             }
           />
