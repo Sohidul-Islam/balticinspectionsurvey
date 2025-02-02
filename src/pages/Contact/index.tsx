@@ -95,7 +95,7 @@ const ContactPage = () => {
         >
           <FormContainer onSubmit={handleSubmit}>
             <FormGrid>
-              <FormGroup>
+              <FormGroup className="full-width">
                 <Label>Inquiry Type</Label>
                 <Select
                   value={formData.inquiryType}
@@ -158,6 +158,18 @@ const ContactPage = () => {
                   }
                   required
                   placeholder="john@example.com"
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>Phone</Label>
+                <Input
+                  type="text"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                  required
+                  placeholder="+88 01718410405"
                 />
               </FormGroup>
 
