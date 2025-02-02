@@ -85,11 +85,22 @@ const ContactPage = () => {
                     setFormData({ ...formData, inquiryType: e.target.value })
                   }
                 >
-                  <option value="">Select an option</option>
-                  <option value="general">General Inquiry</option>
-                  <option value="support">Technical Support</option>
-                  <option value="sales">Sales</option>
-                  <option value="partnership">Partnership</option>
+                  <option value="Request Information">
+                    Request Information
+                  </option>
+                  <option value="Request Quotation">Request Quotation</option>
+                  <option value="Recruitment  Jobs">
+                    Recruitment &amp; Jobs
+                  </option>
+                  <option value="Verify Baltic Documents">
+                    Verify Baltic Documents
+                  </option>
+                  <option value="Provide Your Feedback">
+                    Provide Your Feedback
+                  </option>
+                  <option value="Personal Data &amp; Privacy">
+                    Personal Data &amp; Privacy
+                  </option>
                 </Select>
               </FormGroup>
 
