@@ -107,7 +107,7 @@ const ContactPage = () => {
                     Request Information
                   </option>
                   <option value="Request Quotation">Request Quotation</option>
-                  <option value="Recruitment  Jobs">
+                  <option value="Recruitment & Jobs">
                     Recruitment &amp; Jobs
                   </option>
                   <option value="Verify Baltic Documents">
