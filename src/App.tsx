@@ -49,7 +49,7 @@ const App = () => {
                 <div className="flex-grow">
                   <Contact />
                 </div>
-                <Footer data={footerData} />
+                <Footer />
               </div>
             }
           />
@@ -62,7 +62,7 @@ const App = () => {
                   <div className="flex-grow">
                     <DynamicPage />
                   </div>
-                  <Footer data={footerData} />
+                  <Footer />
                 </div>
               </>
             }

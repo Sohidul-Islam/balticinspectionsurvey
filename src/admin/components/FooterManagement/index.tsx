@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { toast } from "react-hot-toast";
 import {
   RiAddLine,
@@ -220,7 +219,7 @@ const FooterManagement = () => {
             ))}
           </Section>
 
-          <Section>
+          {/* <Section>
             <SectionHeader>
               <h3>Footer Visibility</h3>
             </SectionHeader>
@@ -239,7 +238,7 @@ const FooterManagement = () => {
                 Show footer on website
               </ToggleLabel>
             </ToggleWrapper>
-          </Section>
+          </Section> */}
 
           <ButtonGroup>
             <SaveButton type="submit" disabled={updateMutation.isPending}>
@@ -293,7 +292,7 @@ const FooterManagement = () => {
             </CardContent>
           </InfoCard>
 
-          <InfoCard>
+          {/* <InfoCard>
             <CardHeader>
               <RiToggleLine /> Status
             </CardHeader>
@@ -302,7 +301,7 @@ const FooterManagement = () => {
                 {formData.isActive ? "Active" : "Inactive"}
               </StatusBadge>
             </CardContent>
-          </InfoCard>
+          </InfoCard> */}
         </PreviewSection>
       )}
     </Container>

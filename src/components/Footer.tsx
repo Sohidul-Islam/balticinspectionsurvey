@@ -1,5 +1,5 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import styled from "styled-components";
-
 import { Link } from "react-router-dom";
 import {
   FaLinkedinIn,
@@ -12,16 +12,37 @@ import {
   FaArrowRight,
 } from "react-icons/fa";
 import Logo from "../assets/balticlogowhite.svg?react";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "../services/axios";
 
-interface FooterProps {
-  data: {
-    addresses: string[];
-    phones: string[];
-    email: string;
-  };
+interface FooterData {
+  id: string;
+  emails: string[];
+  phones: string[];
+  addresses: string[];
+  isActive: boolean;
 }
 
-const Footer = ({ data }: FooterProps) => {
+const Footer = () => {
+  const { data: footerData } = useQuery<FooterData>({
+    queryKey: ["footer-data"],
+    queryFn: async () => {
+      const response = await axiosInstance.get("/api/footer");
+      const { emails, phones, addresses, isActive, id } = response?.data?.data;
+      return {
+        id,
+        emails: emails || [],
+        phones: phones || [],
+        addresses: addresses || [],
+        isActive: isActive || false,
+      };
+    },
+  });
+
+  if (!footerData?.isActive) {
+    return null;
+  }
+
   return (
     <FooterContainer>
       <FooterContent>
@@ -61,28 +82,30 @@ const Footer = ({ data }: FooterProps) => {
         <FooterSection>
           <h3>Contact Info</h3>
           <ContactInfo>
-            {data.addresses.map((address, index) => (
-              <ContactItem key={index}>
+            {footerData?.addresses?.map((address: any, index: any) => (
+              <ContactItem key={`address-${index}`}>
                 <IconWrapper>
                   <FaMapMarkerAlt />
                 </IconWrapper>
                 <span>{address}</span>
               </ContactItem>
             ))}
-            {data.phones.map((phone, index) => (
-              <ContactItem key={index}>
+            {footerData?.phones?.map((phone: any, index: any) => (
+              <ContactItem key={`phone-${index}`}>
                 <IconWrapper>
                   <FaPhoneAlt />
                 </IconWrapper>
                 <span>{phone}</span>
               </ContactItem>
             ))}
-            <ContactItem>
-              <IconWrapper>
-                <FaEnvelope />
-              </IconWrapper>
-              <span>{data.email}</span>
-            </ContactItem>
+            {footerData?.emails?.map((email: any, index: any) => (
+              <ContactItem key={`email-${index}`}>
+                <IconWrapper>
+                  <FaEnvelope />
+                </IconWrapper>
+                <span>{email}</span>
+              </ContactItem>
+            ))}
           </ContactInfo>
           <ContactButton to="/contact">
             Contact Us

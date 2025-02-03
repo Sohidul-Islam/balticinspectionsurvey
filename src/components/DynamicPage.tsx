@@ -72,7 +72,12 @@ const DynamicPage = () => {
   //   fetchContent();
   // }, [path]);
 
-  if (isLoading) return <Loader />;
+  if (isLoading)
+    return (
+      <div className="flex flex-col justify-center h-screen">
+        <Loader />
+      </div>
+    );
 
   return (
     <PageContainer>
