@@ -15,6 +15,7 @@ import ContentEditPage from "./admin/pages/ContentEditPage";
 import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
 import InquiryManagement from "./admin/components/InquiryManagement";
+import FooterManagement from "./admin/components/FooterManagement";
 import { footerData } from "./mockup/componentsformate";
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="inquiry" element={<InquiryManagement />} />
+            <Route path="footer" element={<FooterManagement />} />
             <Route path="menus" element={<MenuConsole />} />
             <Route path="menus/mega-menu" element={<MegaMenuPage />} />
             <Route path="pages/content" element={<PageContentList />} />
@@ -42,19 +44,26 @@ const App = () => {
           <Route
             path="/contact"
             element={
-              <>
+              <div className="flex flex-grow-1 flex-col">
                 <Navbar />
-                <Contact />
+                <div className="flex-grow">
+                  <Contact />
+                </div>
                 <Footer data={footerData} />
-              </>
+              </div>
             }
           />
           <Route
             path="*"
             element={
               <>
-                <Navbar />
-                <DynamicPage />
+                <div className="flex h-screen  flex-col">
+                  <Navbar />
+                  <div className="flex-grow">
+                    <DynamicPage />
+                  </div>
+                  <Footer data={footerData} />
+                </div>
               </>
             }
           />

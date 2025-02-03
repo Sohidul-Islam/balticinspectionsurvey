@@ -129,8 +129,6 @@ const DynamicPage = () => {
           />
         );
       })} */}
-
-      <Footer data={footerData} />
     </PageContainer>
   );
 };

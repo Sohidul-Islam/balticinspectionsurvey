@@ -163,6 +163,7 @@ const AdminLayout = () => {
     },
     { path: "/admin/content", icon: <FiEdit2 />, text: "Content Editor" },
     { path: "/admin/inquiry", icon: <FiMessageSquare />, text: "Inquiry" },
+    { path: "/admin/footer", icon: <FiSettings />, text: "Footer" },
     { path: "/admin/settings", icon: <FiSettings />, text: "Settings" },
   ];
 

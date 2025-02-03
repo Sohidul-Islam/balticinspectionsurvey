@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import styled from "styled-components";
 import Logo from "../../assets/balticlogo.svg?react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import {
@@ -220,7 +220,7 @@ const MobileMenuItem = styled(motion.div)`
   margin-bottom: 1rem;
 `;
 
-const MobileMenuTitle = styled.div`
+const MobileMenuTitle = styled(Link)`
   font-size: 1.2rem;
   color: #2d3436;
   padding: 0.8rem;
@@ -246,7 +246,7 @@ const MobileMegaMenu = styled(motion.div)`
   overflow: hidden;
 `;
 
-const MobileMegaMenuTitle = styled.div`
+const MobileMegaMenuTitle = styled(Link)`
   font-size: 1.1rem;
   color: #636e72;
   padding: 0.8rem;
@@ -289,6 +289,8 @@ const Navbar = () => {
   const [mobileMenuId, setMobileMenuId] = useState<number | null>(null);
   const [expandedMenu, setExpandedMenu] = useState<number | null>(null);
   const [expandedMegaMenu, setExpandedMegaMenu] = useState<number | null>(null);
+
+  const navigate = useNavigate();
 
   const { data: menus, isLoading: isLoadingMenus } = useMenus();
   const { data: megaMenus, isLoading: isLoadingMegaMenus } = useMegaMenus(
@@ -423,17 +425,16 @@ const Navbar = () => {
               >
                 {menus?.data.map((menu) => (
                   <MobileMenuItem key={menu.id}>
-                    <MobileMenuTitle
-                      onClick={() =>
-                        setExpandedMenu(
-                          expandedMenu === menu.id ? null : menu.id
-                        )
-                      }
-                    >
+                    <MobileMenuTitle to={menu.path}>
                       {menu.title}
                       <motion.div
                         animate={{ rotate: expandedMenu === menu.id ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
+                        onClick={() =>
+                          setExpandedMenu(
+                            expandedMenu === menu.id ? null : menu.id
+                          )
+                        }
                       >
                         <FiChevronDown />
                       </motion.div>
@@ -451,15 +452,7 @@ const Navbar = () => {
                               exit={{ height: 0, opacity: 0 }}
                               transition={{ duration: 0.2 }}
                             >
-                              <MobileMegaMenuTitle
-                                onClick={() =>
-                                  setExpandedMegaMenu(
-                                    expandedMegaMenu === megaMenu.id
-                                      ? null
-                                      : megaMenu.id
-                                  )
-                                }
-                              >
+                              <MobileMegaMenuTitle to={megaMenu.path}>
                                 {megaMenu.title}
                                 <motion.div
                                   animate={{
@@ -469,6 +462,13 @@ const Navbar = () => {
                                         : 0,
                                   }}
                                   transition={{ duration: 0.2 }}
+                                  onClick={() => {
+                                    setExpandedMegaMenu(
+                                      expandedMegaMenu === megaMenu.id
+                                        ? null
+                                        : megaMenu.id
+                                    );
+                                  }}
                                 >
                                   <FiChevronDown />
                                 </motion.div>
@@ -533,9 +533,12 @@ const SubMegaMenuList: React.FC<SubMegaMenuListProps> = ({
           style={
             isMobile
               ? {
-                  padding: "0.6rem 0",
+                  padding: "0.25rem 0.8rem",
+                  // paddingLeft: "1.25rem",
+                  // paddingTop: "0rem",
                   fontSize: "0.9rem",
                   marginBottom: 0,
+                  marginLeft: "0.5rem",
                 }
               : undefined
           }
