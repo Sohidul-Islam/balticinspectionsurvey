@@ -17,6 +17,8 @@ import Footer from "./components/Footer";
 import InquiryManagement from "./admin/components/InquiryManagement";
 import FooterManagement from "./admin/components/FooterManagement";
 import { authRoutes } from "./routes";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AuthProvider } from "./providers/AuthProvider";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +31,16 @@ const App = () => {
           {authRoutes.map((route) => (
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route
+            path="/admin"
+            element={
+              <AuthProvider>
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              </AuthProvider>
+            }
+          >
             <Route index element={<Dashboard />} />
             <Route path="inquiry" element={<InquiryManagement />} />
             <Route path="footer" element={<FooterManagement />} />

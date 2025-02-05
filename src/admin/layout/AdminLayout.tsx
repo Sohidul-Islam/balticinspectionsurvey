@@ -13,6 +13,8 @@ import {
   FiMessageSquare,
 } from "react-icons/fi";
 import { useState } from "react";
+import { useAuth } from "../../providers/AuthProvider";
+import { BiLogOut } from "react-icons/bi";
 
 const Container = styled.div`
   display: grid;
@@ -146,6 +148,8 @@ const AdminLayout = () => {
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
   const location = useLocation();
 
+  const { logout } = useAuth();
+
   const navItems = [
     { path: "/admin", icon: <FiHome />, text: "Dashboard" },
     {
@@ -213,6 +217,7 @@ const AdminLayout = () => {
                       </ChevronIcon>
                     )}
                   </NavItemButton>
+
                   <AnimatePresence>
                     {!isCollapsed && expandedMenu === item.text && (
                       <SubMenu
@@ -244,6 +249,13 @@ const AdminLayout = () => {
               )}
             </NavItemContainer>
           ))}
+
+          <NavItemButton onClick={() => logout()}>
+            <div className="icon-container">
+              <BiLogOut />
+              <NavText $isCollapsed={false}>Log out</NavText>
+            </div>
+          </NavItemButton>
         </nav>
       </Sidebar>
 

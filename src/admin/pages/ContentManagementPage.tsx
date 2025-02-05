@@ -17,6 +17,8 @@ import ContentEditor from "../components/ContentEditor";
 import ContentPreview from "../components/ContentPreview";
 import ContentPreviewSecondary from "../components/ContentPreviewSecondary";
 import { useLocation, useNavigate } from "react-router";
+import { FaPlus } from "react-icons/fa";
+import AddButton from "../../components/common/AddButton";
 
 const Container = styled.div`
   display: grid;
@@ -206,6 +208,12 @@ const ContentManagementPage = () => {
                 </option>
               ))}
             </Select>
+            <AddButton
+              onClick={() => {
+                resetData.current?.resetSection();
+                setContentId(null);
+              }}
+            />
           </SelectContainer>
         </Header>
 

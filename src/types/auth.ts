@@ -30,6 +30,7 @@ export interface ForgotPasswordData {
 
 export interface ResetPasswordData {
   token: string;
+  email: string;
   password: string;
   confirmPassword: string;
 }

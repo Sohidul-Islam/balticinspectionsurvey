@@ -6,12 +6,13 @@ import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "../../services/axios";
 import { toast } from "react-hot-toast";
 import { ResetPasswordData } from "../../types/auth";
-import { FaExclamationTriangle } from "react-icons/fa";
+import { FaExclamationTriangle, FaLock } from "react-icons/fa";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token");
+  const email = searchParams.get("email");
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -43,12 +44,13 @@ const ResetPassword = () => {
       toast.error("Passwords do not match!");
       return;
     }
-    if (!token) {
+    if (!token || !email) {
       toast.error("Invalid reset token!");
       return;
     }
     resetPasswordMutation.mutate({
       token,
+      email,
       password: formData.password,
       confirmPassword: formData.confirmPassword,
     });
@@ -88,7 +90,7 @@ const ResetPassword = () => {
       >
         <LogoSection>
           <Logo>
-            <i className="fas fa-lock" />
+            <FaLock />
           </Logo>
           <Title>Reset Password</Title>
           <Subtitle>Please enter your new password</Subtitle>
