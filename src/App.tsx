@@ -16,7 +16,8 @@ import Contact from "./pages/Contact";
 import Footer from "./components/Footer";
 import InquiryManagement from "./admin/components/InquiryManagement";
 import FooterManagement from "./admin/components/FooterManagement";
-import { footerData } from "./mockup/componentsformate";
+import { authRoutes } from "./routes";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -25,6 +26,9 @@ const App = () => {
       <Toaster position="top-right" />
       <BrowserRouter>
         <Routes>
+          {authRoutes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="inquiry" element={<InquiryManagement />} />

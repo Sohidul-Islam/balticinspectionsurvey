@@ -1,123 +1,154 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "../../services/axios";
 import { toast } from "react-hot-toast";
-import { LoginData, AuthResponse } from "../../types/auth";
-import { BsLock } from "react-icons/bs";
-import { BiKey } from "react-icons/bi";
-import { FaEnvelope, FaKey, FaLock } from "react-icons/fa";
+import { ResetPasswordData } from "../../types/auth";
+import { FaExclamationTriangle } from "react-icons/fa";
 
-const Login = () => {
+const ResetPassword = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [credentials, setCredentials] = useState<LoginData>({
-    email: "",
+  const token = searchParams.get("token");
+  const [formData, setFormData] = useState({
     password: "",
+    confirmPassword: "",
   });
 
-  const loginMutation = useMutation<AuthResponse, Error, LoginData>({
-    mutationFn: async (data) => {
-      const response = await axiosInstance.post("/api/auth/login", data);
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (data: ResetPasswordData) => {
+      const response = await axiosInstance.post(
+        "/api/auth/reset-password",
+        data
+      );
       return response.data;
     },
-    onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      if (!data.user.isVerified) {
-        toast.error("Please verify your email to access all features.");
-        navigate("/verify-email");
-      } else {
-        toast.success("Login successful!");
-        navigate("/admin/dashboard");
-      }
+    onSuccess: () => {
+      toast.success("Password reset successful!");
+      navigate("/login");
     },
-    onError: (error) => {
-      toast.error(error.message || "Invalid credentials. Please try again.");
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to reset password. Please try again."
+      );
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    loginMutation.mutate(credentials);
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+    if (!token) {
+      toast.error("Invalid reset token!");
+      return;
+    }
+    resetPasswordMutation.mutate({
+      token,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+    });
   };
+
+  if (!token) {
+    return (
+      <Container>
+        <ResetCard
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <LogoSection>
+            <Logo>
+              <FaExclamationTriangle />
+            </Logo>
+            <Title>Invalid Reset Link</Title>
+            <Subtitle>
+              This password reset link is invalid or has expired.
+            </Subtitle>
+          </LogoSection>
+          <BackToLogin>
+            <Link to="/forgot-password">Request New Reset Link</Link>
+          </BackToLogin>
+        </ResetCard>
+      </Container>
+    );
+  }
 
   return (
     <Container>
-      <LoginCard
+      <ResetCard
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <LogoSection>
           <Logo>
-            <FaLock />
+            <i className="fas fa-lock" />
           </Logo>
-          <Title>Admin Login</Title>
-          <Subtitle>Welcome back! Please login to your account.</Subtitle>
+          <Title>Reset Password</Title>
+          <Subtitle>Please enter your new password</Subtitle>
         </LogoSection>
 
         <Form onSubmit={handleSubmit}>
           <FormGroup>
             <Label>
-              <FaEnvelope /> Email
+              <i className="fas fa-lock" /> New Password
             </Label>
             <Input
-              type="email"
-              placeholder="Enter your email"
-              value={credentials.email}
+              type="password"
+              placeholder="Enter new password"
+              value={formData.password}
               onChange={(e) =>
-                setCredentials({ ...credentials, email: e.target.value })
+                setFormData({ ...formData, password: e.target.value })
               }
+              minLength={6}
               required
             />
           </FormGroup>
 
           <FormGroup>
             <Label>
-              <FaKey /> Password
+              <i className="fas fa-lock" /> Confirm Password
             </Label>
-            <PasswordWrapper>
-              <Input
-                type="password"
-                placeholder="Enter your password"
-                value={credentials.password}
-                onChange={(e) =>
-                  setCredentials({ ...credentials, password: e.target.value })
-                }
-                required
-              />
-            </PasswordWrapper>
+            <Input
+              type="password"
+              placeholder="Confirm new password"
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
+              minLength={6}
+              required
+            />
           </FormGroup>
 
-          <RememberMeSection>
-            {/* <CheckboxLabel>
-              <Checkbox type="checkbox" />
-              Remember me
-            </CheckboxLabel> */}
-            <ForgotPassword to="/forgot-password">
-              Forgot password?
-            </ForgotPassword>
-          </RememberMeSection>
-
-          <LoginButton
+          <ResetButton
             type="submit"
-            disabled={loginMutation.isPending}
+            disabled={resetPasswordMutation.isPending}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            {loginMutation.isPending ? (
+            {resetPasswordMutation.isPending ? (
               <>
-                <LoadingSpinner /> Logging in...
+                <LoadingSpinner /> Resetting Password...
               </>
             ) : (
               <>
-                Login <i className="fas fa-arrow-right" />
+                Reset Password <i className="fas fa-arrow-right" />
               </>
             )}
-          </LoginButton>
+          </ResetButton>
         </Form>
-      </LoginCard>
+
+        <BackToLogin>
+          Remember your password? <Link to="/login">Back to Login</Link>
+        </BackToLogin>
+      </ResetCard>
     </Container>
   );
 };
@@ -131,7 +162,7 @@ const Container = styled.div`
   padding: 2rem;
 `;
 
-const LoginCard = styled(motion.div)`
+const ResetCard = styled(motion.div)`
   background: white;
   border-radius: 20px;
   padding: 2.5rem;
@@ -198,7 +229,6 @@ const Input = styled.input`
   border: 2px solid #e2e8f0;
   border-radius: 10px;
   font-size: 1rem;
-  width: 100%;
   transition: all 0.3s ease;
 
   &:focus {
@@ -208,43 +238,7 @@ const Input = styled.input`
   }
 `;
 
-const PasswordWrapper = styled.div`
-  position: relative;
-`;
-
-const RememberMeSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #4a5568;
-  font-size: 0.9rem;
-  cursor: pointer;
-`;
-
-const Checkbox = styled.input`
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-`;
-
-const ForgotPassword = styled(Link)`
-  color: #667eea;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: #764ba2;
-  }
-`;
-
-const LoginButton = styled(motion.button)`
+const ResetButton = styled(motion.button)`
   background: linear-gradient(135deg, #1a2b6d 0%, #2a4fa8 100%);
   color: white;
   border: none;
@@ -287,4 +281,22 @@ const LoadingSpinner = styled.div`
   }
 `;
 
-export default Login;
+const BackToLogin = styled.div`
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #4a5568;
+  font-size: 0.95rem;
+
+  a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #764ba2;
+    }
+  }
+`;
+
+export default ResetPassword;
