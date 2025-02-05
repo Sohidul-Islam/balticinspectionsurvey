@@ -23,17 +23,21 @@ const Register = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      if (data?.user?.isVerified && data?.user?.status === "approved") {
+      if (
+        data?.data?.user?.isVerified &&
+        data?.data?.user?.status === "approved"
+      ) {
         toast.success("Registration successful!");
-        navigate("/admin/dashboard");
+        navigate("/admin");
       } else {
         toast.success(
           "Registration successful! Please check your email to verify your account."
         );
-        navigate(`/verify-email?email=${data.user.email}`);
+        navigate(`/verify-email?email=${data?.data?.user?.email}`);
       }
     },
     onError: (error: any) => {
+      console.log({ error });
       toast.error(
         error.response?.data?.message ||
           "Registration failed. Please try again."

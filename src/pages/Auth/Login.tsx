@@ -21,13 +21,21 @@ const Login = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      if (!data?.user?.isVerified) {
+      localStorage.setItem("token", data?.data?.token);
+      console.log({ data });
+      if (
+        !data?.data?.user?.isVerified &&
+        data?.data?.user?.status !== "approved"
+      ) {
         toast.error("Please verify your email to access all features.");
-        navigate(`/verify-email?email=${data.user.email}`);
+        navigate(`/verify-email?email=${data?.data?.user?.email}`);
+      } else if (data?.data?.user?.status === "pending") {
+        toast.error("Your account is pending approval. Please wait.");
+      } else if (data?.data?.user?.status === "rejected") {
+        toast.error("Your account is rejected. Please contact support.");
       } else {
         toast.success("Login successful!");
-        navigate("/admin/dashboard");
+        navigate("/admin");
       }
     },
     onError: (error) => {

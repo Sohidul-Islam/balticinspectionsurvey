@@ -1,11 +1,16 @@
 export interface AuthResponse {
-  token: string;
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    isVerified: boolean;
+  data: {
+    token: string;
+    user: {
+      id: string;
+      username: string;
+      email: string;
+      isVerified: boolean;
+      status: string;
+    };
   };
+  message: string;
+  status: string;
 }
 
 export interface RegisterData {
