@@ -31,4 +31,5 @@ export interface ResetPasswordData {
 
 export interface VerifyEmailData {
   token: string;
+  email: string;
 }

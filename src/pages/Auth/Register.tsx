@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "../../services/axios";
 import { toast } from "react-hot-toast";
 import { RegisterData } from "../../types/auth";
+import { FaEnvelope, FaLock, FaUser, FaUserPlus } from "react-icons/fa";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,11 +22,16 @@ const Register = () => {
       const response = await axiosInstance.post("/api/auth/register", data);
       return response.data;
     },
-    onSuccess: () => {
-      toast.success(
-        "Registration successful! Please check your email to verify your account."
-      );
-      navigate("/verify-email");
+    onSuccess: (data) => {
+      if (data?.user?.isVerified && data?.user?.status === "approved") {
+        toast.success("Registration successful!");
+        navigate("/admin/dashboard");
+      } else {
+        toast.success(
+          "Registration successful! Please check your email to verify your account."
+        );
+        navigate(`/verify-email?email=${data.user.email}`);
+      }
     },
     onError: (error: any) => {
       toast.error(
@@ -53,7 +59,7 @@ const Register = () => {
       >
         <LogoSection>
           <Logo>
-            <i className="fas fa-user-plus" />
+            <FaUserPlus />
           </Logo>
           <Title>Create Account</Title>
           <Subtitle>Join us! Please create your account.</Subtitle>
@@ -62,7 +68,7 @@ const Register = () => {
         <Form onSubmit={handleSubmit}>
           <FormGroup>
             <Label>
-              <i className="fas fa-user" /> Username
+              <FaUser /> Username
             </Label>
             <Input
               type="text"
@@ -79,7 +85,7 @@ const Register = () => {
 
           <FormGroup>
             <Label>
-              <i className="fas fa-envelope" /> Email
+              <FaEnvelope /> Email
             </Label>
             <Input
               type="email"
@@ -94,7 +100,7 @@ const Register = () => {
 
           <FormGroup>
             <Label>
-              <i className="fas fa-lock" /> Password
+              <FaLock /> Password
             </Label>
             <Input
               type="password"
@@ -110,7 +116,7 @@ const Register = () => {
 
           <FormGroup>
             <Label>
-              <i className="fas fa-lock" /> Confirm Password
+              <FaLock /> Confirm Password
             </Label>
             <Input
               type="password"
@@ -153,7 +159,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1a2b6d 0%, #2a4fa8 100%);
   padding: 2rem;
 `;
 
@@ -174,7 +180,7 @@ const LogoSection = styled.div`
 const Logo = styled.div`
   width: 70px;
   height: 70px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1a2b6d 0%, #2a4fa8 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -234,7 +240,7 @@ const Input = styled.input`
 `;
 
 const RegisterButton = styled(motion.button)`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1a2b6d 0%, #2a4fa8 100%);
   color: white;
   border: none;
   padding: 1rem;

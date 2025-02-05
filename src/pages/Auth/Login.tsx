@@ -6,8 +6,6 @@ import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "../../services/axios";
 import { toast } from "react-hot-toast";
 import { LoginData, AuthResponse } from "../../types/auth";
-import { BsLock } from "react-icons/bs";
-import { BiKey } from "react-icons/bi";
 import { FaEnvelope, FaKey, FaLock } from "react-icons/fa";
 
 const Login = () => {
@@ -24,9 +22,9 @@ const Login = () => {
     },
     onSuccess: (data) => {
       localStorage.setItem("token", data.token);
-      if (!data.user.isVerified) {
+      if (!data?.user?.isVerified) {
         toast.error("Please verify your email to access all features.");
-        navigate("/verify-email");
+        navigate(`/verify-email?email=${data.user.email}`);
       } else {
         toast.success("Login successful!");
         navigate("/admin/dashboard");
@@ -98,6 +96,9 @@ const Login = () => {
             <ForgotPassword to="/forgot-password">
               Forgot password?
             </ForgotPassword>
+            <RegisterLink to="/register">
+              Don't have an account? Register{" "}
+            </RegisterLink>
           </RememberMeSection>
 
           <LoginButton
@@ -218,20 +219,20 @@ const RememberMeSection = styled.div`
   align-items: center;
 `;
 
-const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #4a5568;
-  font-size: 0.9rem;
-  cursor: pointer;
-`;
+// const CheckboxLabel = styled.label`
+//   display: flex;
+//   align-items: center;
+//   gap: 0.5rem;
+//   color: #4a5568;
+//   font-size: 0.9rem;
+//   cursor: pointer;
+// `;
 
-const Checkbox = styled.input`
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-`;
+// const Checkbox = styled.input`
+//   width: 16px;
+//   height: 16px;
+//   cursor: pointer;
+// `;
 
 const ForgotPassword = styled(Link)`
   color: #667eea;
@@ -284,6 +285,17 @@ const LoadingSpinner = styled.div`
     to {
       transform: rotate(360deg);
     }
+  }
+`;
+
+const RegisterLink = styled(Link)`
+  color: #667eea;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #764ba2;
   }
 `;
 

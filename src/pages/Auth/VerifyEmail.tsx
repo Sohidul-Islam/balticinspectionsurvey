@@ -12,6 +12,7 @@ const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token");
+  const email = searchParams.get("email");
 
   const verifyMutation = useMutation({
     mutationFn: async (data: VerifyEmailData) => {
@@ -28,14 +29,16 @@ const VerifyEmail = () => {
   });
 
   React.useEffect(() => {
-    if (token) {
-      verifyMutation.mutate({ token });
+    if (token && email) {
+      verifyMutation.mutate({ token, email });
     }
-  }, [token]);
+  }, [token, email]);
 
   const handleResendVerification = async () => {
     try {
-      await axiosInstance.post("/api/auth/resend-verification");
+      await axiosInstance.post("/api/auth/resend-verification-email", {
+        email,
+      });
       toast.success("Verification email has been resent!");
     } catch (error) {
       toast.error("Failed to resend verification email. Please try again.");
