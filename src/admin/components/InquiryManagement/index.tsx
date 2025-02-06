@@ -126,8 +126,6 @@ const InquiryManagement = () => {
   const { data: inquiries, isLoading, refetch } = useInquiries();
   const { mutate: updateStatus } = useUpdateInquiryStatus();
 
-  console.log({ inquiries });
-
   const handleStatusUpdate = (id: string, status: string) => {
     updateStatus({ id, status });
   };
