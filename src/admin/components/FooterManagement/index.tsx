@@ -7,6 +7,8 @@ import {
   RiAddLine,
   RiDeleteBinLine,
   RiEditLine,
+  RiMailLine,
+  RiMapPinLine,
   RiPhoneLine,
   RiSaveLine,
   RiToggleLine,
@@ -261,7 +263,7 @@ const FooterManagement = () => {
         <PreviewSection>
           <InfoCard>
             <CardHeader>
-              <i className="fas fa-envelope" /> Email Addresses
+              <RiMailLine /> Email Addresses
             </CardHeader>
             <CardContent>
               {formData.emails?.map((email, index) => (
@@ -283,7 +285,7 @@ const FooterManagement = () => {
 
           <InfoCard>
             <CardHeader>
-              <i className="fas fa-map-marker-alt" /> Addresses
+              <RiMapPinLine /> Addresses
             </CardHeader>
             <CardContent>
               {formData.addresses?.map((address, index) => (

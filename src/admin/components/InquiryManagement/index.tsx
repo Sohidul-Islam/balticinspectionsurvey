@@ -6,7 +6,7 @@ import {
   useInquiries,
   useUpdateInquiryStatus,
 } from "../../../hooks/useInquiry";
-import { FaFile, FaTimes } from "react-icons/fa";
+import { FaFile, FaSyncAlt, FaTimes } from "react-icons/fa";
 
 interface DetailModalProps {
   inquiry: any;
@@ -137,7 +137,7 @@ const InquiryManagement = () => {
       <Header>
         <Title>Inquiry Management</Title>
         <RefreshButton onClick={() => refetch()}>
-          <i className="fas fa-sync-alt" /> Refresh
+          <FaSyncAlt /> Refresh
         </RefreshButton>
       </Header>
 

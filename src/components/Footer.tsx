@@ -39,9 +39,9 @@ const Footer = () => {
     },
   });
 
-  if (!footerData?.isActive) {
-    return null;
-  }
+  // if (!footerData?.isActive) {
+  //   return null;
+  // }
 
   return (
     <FooterContainer>
