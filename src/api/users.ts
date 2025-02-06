@@ -3,6 +3,8 @@ import axiosInstance from "../services/axios";
 interface User {
   id: string;
   name: string;
+  isVerified: boolean;
+  username: string;
   email: string;
   status: "pending" | "approved" | "rejected";
   // add other user fields as needed

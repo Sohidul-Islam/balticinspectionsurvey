@@ -6,7 +6,7 @@ import { Loader } from "../admin/components/Loader";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: any | null;
+  user: any;
   loading: boolean;
   checkAuth: () => Promise<void>;
   logout: () => void;
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const response = await axiosInstance.get("/api/auth/verify-token");
-      setUser(response.data.user);
+      setUser(response.data.data.user);
       setIsAuthenticated(true);
     } catch (error) {
       localStorage.removeItem("token");
