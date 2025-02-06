@@ -19,6 +19,7 @@ import FooterManagement from "./admin/components/FooterManagement";
 import { authRoutes } from "./routes";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthProvider } from "./providers/AuthProvider";
+import { Users } from "./components/Users";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ const App = () => {
               element={<SubMegaMenuPage />}
             />
             <Route path="pages" element={<PageBuilder />} />
+            <Route path="users" element={<Users />} />
             <Route path="pages/:path" element={<DynamicPage />} />
           </Route>
           <Route

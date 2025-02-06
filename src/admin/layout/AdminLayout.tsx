@@ -11,6 +11,7 @@ import {
   FiFileText,
   FiEdit2,
   FiMessageSquare,
+  FiUsers,
 } from "react-icons/fi";
 import { useState } from "react";
 import { useAuth } from "../../providers/AuthProvider";
@@ -167,6 +168,7 @@ const AdminLayout = () => {
     },
     { path: "/admin/content", icon: <FiEdit2 />, text: "Content Editor" },
     { path: "/admin/inquiry", icon: <FiMessageSquare />, text: "Inquiry" },
+    { path: "/admin/users", icon: <FiUsers />, text: "Users" },
     { path: "/admin/footer", icon: <FiSettings />, text: "Footer" },
     { path: "/admin/settings", icon: <FiSettings />, text: "Settings" },
   ];
