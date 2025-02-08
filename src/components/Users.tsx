@@ -17,8 +17,6 @@ export const Users = () => {
 
   const navigate = useNavigate();
 
-  console.log({ authData });
-
   // Fetch users
   const {
     data: users,
