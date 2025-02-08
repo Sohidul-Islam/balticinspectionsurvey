@@ -7,6 +7,8 @@ interface User {
   username: string;
   email: string;
   status: "pending" | "approved" | "rejected";
+  resetPasswordToken?: string | number | null;
+  resetPasswordExpiry?: Date | null;
   // add other user fields as needed
 }
 

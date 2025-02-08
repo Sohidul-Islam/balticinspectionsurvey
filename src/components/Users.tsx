@@ -8,11 +8,14 @@ import {
 import { toast } from "react-hot-toast"; // or your preferred toast library
 import { FiEdit2, FiTrash2, FiCheck, FiX } from "react-icons/fi"; // Import icons
 import { useAuth } from "../providers/AuthProvider";
+import { useNavigate } from "react-router";
 
 export const Users = () => {
   const queryClient = useQueryClient();
 
   const authData = useAuth();
+
+  const navigate = useNavigate();
 
   console.log({ authData });
 
@@ -115,6 +118,9 @@ export const Users = () => {
                   Verified
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Password Token
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -164,6 +170,22 @@ export const Users = () => {
                     >
                       {user.isVerified ? "Verified" : "Mark as Verified"}
                     </button>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    {user.resetPasswordToken && user.resetPasswordExpiry ? (
+                      <button
+                        onClick={() => {
+                          navigate(
+                            `/reset-password?token=${user.resetPasswordToken}&email=${user.email}`
+                          );
+                        }}
+                        className="inline-flex items-center px-3 py-1.5 rounded-md text-sm bg-blue-50 text-blue-700 hover:bg-blue-100"
+                      >
+                        Reset Password Link
+                      </button>
+                    ) : (
+                      "N/A"
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <button
