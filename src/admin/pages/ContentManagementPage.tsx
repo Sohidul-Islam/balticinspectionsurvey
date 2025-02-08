@@ -22,7 +22,7 @@ import AddButton from "../../components/common/AddButton";
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 2rem;
   padding: 2rem;
 

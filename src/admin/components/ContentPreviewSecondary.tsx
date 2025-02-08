@@ -7,6 +7,7 @@ import { sectionComponents } from "../../components/DynamicPage";
 
 const PreviewContainer = styled.div`
   margin-top: 2rem;
+  max-width: min(500px, 80vw);
 `;
 
 const PreviewHeader = styled.div`
@@ -118,9 +119,9 @@ const DragHandle = styled.div`
 
 interface ContentPreviewProps {
   sections: Section[];
-  onReorder: (newOrder: Section[]) => void;
-  onEdit: (index: number) => void;
-  onPreview: () => void;
+  onReorder?: (newOrder: Section[]) => void;
+  onEdit?: (index: number) => void;
+  onPreview?: () => void;
 }
 
 const ContentPreviewSecondary: React.FC<ContentPreviewProps> = ({
@@ -132,78 +133,6 @@ const ContentPreviewSecondary: React.FC<ContentPreviewProps> = ({
   const getImageUrl = (path: string) => {
     if (!path) return "";
     return path.startsWith("http") ? path : `${BASE_URL}${path}`;
-  };
-
-  console.log({ sections });
-
-  const renderSectionPreview = (section: Section) => {
-    switch (section.type) {
-      case "heroSlider":
-        return (
-          <>
-            {section.data.heroImages.map((heroImage: any, index: number) => (
-              <div key={index}>
-                <ImagePreview src={getImageUrl(heroImage.image)} alt="Hero" />
-                <h4>{heroImage.heading}</h4>
-                <p>{heroImage.subheading}</p>
-              </div>
-            ))}
-          </>
-        );
-      case "hero":
-        return (
-          <>
-            <div>
-              <ImagePreview src={getImageUrl(section.data.image)} alt="Hero" />
-              <h4>{section.data.heading}</h4>
-              <p>{section.data.subheading}</p>
-            </div>
-          </>
-        );
-
-      case "imageGrid":
-        return (
-          <>
-            <h3>{section.data.title}</h3>
-            <p>{section.data.description}</p>
-            <GridPreview>
-              {[1, 2, 3].map(
-                (num) =>
-                  section.data[`image${num}`] && (
-                    <ImagePreview
-                      key={num}
-                      src={getImageUrl(section.data[`image${num}`])}
-                      alt={`Grid image ${num}`}
-                    />
-                  )
-              )}
-            </GridPreview>
-          </>
-        );
-
-      case "list":
-        return (
-          <>
-            <h3>{section.data.title}</h3>
-            <ListPreview>
-              {section.data.items?.map((item: string, index: number) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ListPreview>
-          </>
-        );
-
-      case "text":
-        return (
-          <>
-            <h3>{section.data.title}</h3>
-            <PreviewContent>{section.data.content}</PreviewContent>
-          </>
-        );
-
-      default:
-        return null;
-    }
   };
 
   return (
@@ -218,7 +147,7 @@ const ContentPreviewSecondary: React.FC<ContentPreviewProps> = ({
       <Reorder.Group
         axis="y"
         values={sections}
-        onReorder={onReorder}
+        onReorder={(value) => onReorder?.(value)}
         style={{ padding: "0.5rem 0" }}
       >
         {sections.map((section, index) => (
@@ -241,9 +170,9 @@ const ContentPreviewSecondary: React.FC<ContentPreviewProps> = ({
             }}
           >
             <SectionType>{section.type}</SectionType>
-            <ActionButtons>
+            {/* <ActionButtons>
               <ActionButton
-                onClick={() => onEdit(index)}
+                onClick={() => onEdit?.(index)}
                 whileHover={{ scale: 1.1 }}
               >
                 <FiEdit2 />
@@ -251,12 +180,13 @@ const ContentPreviewSecondary: React.FC<ContentPreviewProps> = ({
               <DragHandle>
                 <FiMove size={20} />
               </DragHandle>
-            </ActionButtons>
+            </ActionButtons> */}
 
             <div
               style={{
                 transform: "translate3d(0,0, 0)", // Very small 3D translation
                 transition: "transform 0.3s ease", // Optional, for smooth transition
+                maxWidth: "100%",
               }}
             >
               {(() => {

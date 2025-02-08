@@ -6,6 +6,7 @@ import { BASE_URL } from "../../services/api";
 
 const PreviewContainer = styled.div`
   margin-top: 2rem;
+  max-width: min(400px, 80vw);
 `;
 
 const PreviewHeader = styled.div`

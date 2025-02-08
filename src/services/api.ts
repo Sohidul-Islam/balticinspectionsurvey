@@ -4,7 +4,8 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-export const BASE_URL = "http://localhost:5000";
+export const BASE_URL = "https://server.balticinspectionsurvey.com";
+// export const BASE_URL = "http://localhost:5000";
 
 export const menuService = {
   getMenus: () => api.get("/menus"),

@@ -14,6 +14,7 @@ import axiosInstance from "../services/axios";
 import { Loader } from "../admin/components/Loader";
 import { useQuery } from "@tanstack/react-query";
 import ImageGridSection from "./ImageGridSection";
+import { parseIfJson } from "../utils";
 
 const PageContainer = styled.div`
   padding-top: 82px;
@@ -47,7 +48,12 @@ const DynamicPage = () => {
     queryFn: async () =>
       axiosInstance
         .get(`/api/content/page`, { params: { path: location.pathname } })
-        .then((res) => res.data.data),
+        .then((res) =>
+          res.data.data?.map((item: any) => ({
+            ...item,
+            sections: parseIfJson(item.sections),
+          }))
+        ),
   });
 
   console.log({ data, isLoading, error });

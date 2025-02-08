@@ -1,4 +1,3 @@
-/* eslint-disable no-unsafe-optional-chaining */
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import {
@@ -14,6 +13,7 @@ import {
 import Logo from "../assets/balticlogowhite.svg?react";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../services/axios";
+import { parseIfJson } from "../utils";
 
 interface FooterData {
   id: string;
@@ -28,7 +28,10 @@ const Footer = () => {
     queryKey: ["footer-data"],
     queryFn: async () => {
       const response = await axiosInstance.get("/api/footer");
-      const { emails, phones, addresses, isActive, id } = response?.data?.data;
+      const { emails, phones, addresses, isActive, id } = parseIfJson(
+        response?.data?.data
+      );
+
       return {
         id,
         emails: emails || [],
@@ -38,6 +41,8 @@ const Footer = () => {
       };
     },
   });
+
+  console.log({ footerData });
 
   // if (!footerData?.isActive) {
   //   return null;

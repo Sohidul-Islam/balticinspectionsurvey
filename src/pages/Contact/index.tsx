@@ -2,6 +2,18 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { useSubmitInquiry } from "../../hooks/useInquiry";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "../../services/axios";
+import { Loader } from "../../admin/components/Loader";
+import { parseIfJson } from "../../utils";
+
+interface FooterData {
+  id: string;
+  emails: string[];
+  phones: string[];
+  addresses: string[];
+  isActive: boolean;
+}
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +29,23 @@ const ContactPage = () => {
   });
 
   const { mutate: submitInquiry, isPending } = useSubmitInquiry();
+
+  const { data: footerData, isLoading } = useQuery<FooterData>({
+    queryKey: ["footer-data"],
+    queryFn: async () => {
+      const response = await axiosInstance.get("/api/footer");
+      const { emails, phones, addresses, isActive, id } = parseIfJson(
+        response?.data?.data
+      );
+      return {
+        id,
+        emails: emails || [],
+        phones: phones || [],
+        addresses: addresses || [],
+        isActive: isActive || false,
+      };
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +67,8 @@ const ContactPage = () => {
       },
     });
   };
+
+  if (isLoading) return <Loader />;
 
   return (
     <Container>
@@ -64,7 +95,11 @@ const ContactPage = () => {
           >
             <CardIcon className="fas fa-map-marker-alt" />
             <CardTitle>Visit Us</CardTitle>
-            <CardText>123 Business Avenue, Suite 100, City, Country</CardText>
+            <CardText>
+              {footerData?.addresses?.map((address, index) => (
+                <div key={index}>{address}</div>
+              ))}
+            </CardText>
           </ContactCard>
 
           <ContactCard
@@ -74,7 +109,11 @@ const ContactPage = () => {
           >
             <CardIcon className="fas fa-phone-alt" />
             <CardTitle>Call Us</CardTitle>
-            <CardText>+1 (555) 123-4567</CardText>
+            <CardText>
+              {footerData?.phones?.map((phone, index) => (
+                <div key={index}>{phone}</div>
+              ))}
+            </CardText>
           </ContactCard>
 
           <ContactCard
@@ -84,7 +123,11 @@ const ContactPage = () => {
           >
             <CardIcon className="fas fa-envelope" />
             <CardTitle>Email Us</CardTitle>
-            <CardText>contact@yourcompany.com</CardText>
+            <CardText>
+              {footerData?.emails?.map((email, index) => (
+                <div key={index}>{email}</div>
+              ))}
+            </CardText>
           </ContactCard>
         </CardGrid>
 

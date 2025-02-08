@@ -1,4 +1,3 @@
-/* eslint-disable no-unsafe-optional-chaining */
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +13,7 @@ import {
   RiToggleLine,
 } from "react-icons/ri";
 import axiosInstance from "../../../services/axios";
+import { parseIfJson } from "../../../utils";
 
 interface FooterData {
   id?: number;
@@ -39,7 +39,9 @@ const FooterManagement = () => {
     queryKey: ["footer-data"],
     queryFn: async () => {
       const response = await axiosInstance.get("/api/footer");
-      const { emails, phones, addresses, isActive, id } = response?.data?.data;
+      const { emails, phones, addresses, isActive, id } = parseIfJson(
+        response?.data?.data
+      );
       return {
         id,
         emails: emails || [],
@@ -140,7 +142,7 @@ const FooterManagement = () => {
                 <RiAddLine /> Add Email
               </AddButton>
             </SectionHeader>
-            {formData.emails?.map((email, index) => (
+            {formData?.emails?.map((email, index) => (
               <FieldGroup key={`email-${index}`}>
                 <Input
                   type="email"
@@ -150,7 +152,7 @@ const FooterManagement = () => {
                   }
                   placeholder="Enter email address"
                 />
-                {formData.emails.length > 1 && (
+                {formData?.emails.length > 1 && (
                   <RemoveButton
                     type="button"
                     onClick={() => handleRemoveField("emails", index)}
@@ -266,7 +268,7 @@ const FooterManagement = () => {
               <RiMailLine /> Email Addresses
             </CardHeader>
             <CardContent>
-              {formData.emails?.map((email, index) => (
+              {formData?.emails?.map((email, index) => (
                 <InfoItem key={`email-${index}`}>{email}</InfoItem>
               ))}
             </CardContent>
@@ -277,7 +279,7 @@ const FooterManagement = () => {
               <RiPhoneLine /> Phone Numbers
             </CardHeader>
             <CardContent>
-              {formData.phones?.map((phone, index) => (
+              {formData?.phones?.map((phone, index) => (
                 <InfoItem key={`phone-${index}`}>{phone}</InfoItem>
               ))}
             </CardContent>

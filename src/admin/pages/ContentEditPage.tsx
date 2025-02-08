@@ -7,6 +7,8 @@ import ContentEditor from "../components/ContentEditor";
 
 import axiosInstance from "../../services/axios";
 import { useQuery } from "@tanstack/react-query";
+import { parseIfJson } from "../../utils";
+import ContentPreviewSecondary from "../components/ContentPreviewSecondary";
 
 const Container = styled.div`
   padding: 2rem;
@@ -24,7 +26,7 @@ const ContentEditPage = () => {
           contentId: contentId,
         },
       });
-      return data?.data[0] || null;
+      return parseIfJson(data?.data[0]) || null;
     },
   });
 
@@ -48,20 +50,24 @@ const ContentEditPage = () => {
     }
   };
 
-  console.log({ data: contentData, sections });
-
   if (isLoading) return <Loader />;
 
   return (
     <Container>
       <h1>Edit Content</h1>
-      <ContentEditor
-        onSave={handleSave}
-        initialContent={{
-          title: contentData?.title || "",
-          sections: contentData?.sections,
-        }}
-      />
+      <div className="grid grid-cols-1  md:grid-cols-3 gap-x-4">
+        <div className="col-span-2">
+          <ContentEditor
+            onSave={handleSave}
+            initialContent={{
+              title: contentData?.title || "",
+              sections: contentData?.sections,
+            }}
+          />
+        </div>
+
+        <ContentPreviewSecondary sections={contentData?.sections} />
+      </div>
     </Container>
   );
 };
