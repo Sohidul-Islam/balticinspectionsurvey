@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { motion, Reorder } from "framer-motion";
 import { Section } from "../../services/contentApi";
-import { FiEdit2, FiEye, FiMove } from "react-icons/fi";
-import { BASE_URL } from "../../services/api";
+import { FiEye } from "react-icons/fi";
 import { sectionComponents } from "../../components/DynamicPage";
 
 const PreviewContainer = styled.div`
@@ -48,18 +47,6 @@ const SectionType = styled.div`
   margin-bottom: 1rem;
 `;
 
-const PreviewContent = styled.div`
-  margin-top: 1rem;
-`;
-
-const ActionButtons = styled.div`
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  gap: 0.5rem;
-`;
-
 const ActionButton = styled(motion.button)`
   width: 36px;
   height: 36px;
@@ -78,45 +65,6 @@ const ActionButton = styled(motion.button)`
   }
 `;
 
-const ImagePreview = styled.img`
-  max-width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-top: 1rem;
-`;
-
-const GridPreview = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1rem;
-`;
-
-const ListPreview = styled.ul`
-  margin: 1rem 0;
-  padding-left: 1.5rem;
-
-  li {
-    margin-bottom: 0.5rem;
-  }
-`;
-
-const DragHandle = styled.div`
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #4b5563;
-  cursor: grab;
-
-  &:active {
-    cursor: grabbing;
-    color: #3b82f6;
-  }
-`;
-
 interface ContentPreviewProps {
   sections: Section[];
   onReorder?: (newOrder: Section[]) => void;
@@ -127,14 +75,8 @@ interface ContentPreviewProps {
 const ContentPreviewSecondary: React.FC<ContentPreviewProps> = ({
   sections,
   onReorder,
-  onEdit,
   onPreview,
 }) => {
-  const getImageUrl = (path: string) => {
-    if (!path) return "";
-    return path.startsWith("http") ? path : `${BASE_URL}${path}`;
-  };
-
   return (
     <PreviewContainer>
       <PreviewHeader>

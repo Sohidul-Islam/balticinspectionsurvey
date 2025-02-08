@@ -5,7 +5,6 @@ import {
   FiMenu,
   FiHome,
   FiList,
-  FiLayout,
   FiSettings,
   FiChevronDown,
   FiFileText,
@@ -170,7 +169,7 @@ const AdminLayout = () => {
     { path: "/admin/inquiry", icon: <FiMessageSquare />, text: "Inquiry" },
     { path: "/admin/users", icon: <FiUsers />, text: "Users" },
     { path: "/admin/footer", icon: <FiSettings />, text: "Footer" },
-    { path: "/admin/settings", icon: <FiSettings />, text: "Settings" },
+    // { path: "/admin/settings", icon: <FiSettings />, text: "Settings" },
   ];
 
   const handleMenuClick = (text: string) => {

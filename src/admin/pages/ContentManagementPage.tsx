@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
-import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import {
   useMenus,
@@ -14,10 +13,7 @@ import {
 } from "../../services/contentApi";
 import { Loader } from "../components/Loader";
 import ContentEditor from "../components/ContentEditor";
-import ContentPreview from "../components/ContentPreview";
 import ContentPreviewSecondary from "../components/ContentPreviewSecondary";
-import { useLocation, useNavigate } from "react-router";
-import { FaPlus } from "react-icons/fa";
 import AddButton from "../../components/common/AddButton";
 
 const Container = styled.div`
@@ -135,7 +131,7 @@ const ContentManagementPage = () => {
     setSections(newOrder);
   };
 
-  const handleEdit = (index: number) => {
+  const handleEdit = () => {
     // Scroll to editor
     document.querySelector(".content-editor")?.scrollIntoView({
       behavior: "smooth",

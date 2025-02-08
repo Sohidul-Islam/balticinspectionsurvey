@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { motion } from "framer-motion";
 import { useMenus } from "../../services/menuApi";
 import { MegaMenuEditor } from "../components/MegaMenuEditor";
 import { Loader } from "../components/Loader";

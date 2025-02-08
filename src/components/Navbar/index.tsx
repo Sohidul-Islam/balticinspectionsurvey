@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import styled from "styled-components";
 import Logo from "../../assets/balticlogo.svg?react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import {
@@ -290,12 +290,8 @@ const Navbar = () => {
   const [expandedMenu, setExpandedMenu] = useState<number | null>(null);
   const [expandedMegaMenu, setExpandedMegaMenu] = useState<number | null>(null);
 
-  const navigate = useNavigate();
-
   const { data: menus, isLoading: isLoadingMenus } = useMenus();
-  const { data: megaMenus, isLoading: isLoadingMegaMenus } = useMegaMenus(
-    hoveredMenu || mobileMenuId || 0
-  );
+  const { data: megaMenus } = useMegaMenus(hoveredMenu || mobileMenuId || 0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -352,6 +348,9 @@ const Navbar = () => {
             <MenuItem
               key={menu.id}
               onMouseEnter={() => setHoveredMenu(menu.id)}
+              onClick={() => {
+                setHoveredMenu(null);
+              }}
               // Removed to prevent setting hovered menu to null on mouse leave
             >
               <NavLink to={menu?.path}>

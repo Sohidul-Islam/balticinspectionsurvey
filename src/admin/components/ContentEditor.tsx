@@ -151,24 +151,6 @@ const ListItem = styled.div`
   align-items: center;
 `;
 
-const BannerContainer = styled.div`
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 1rem;
-  margin: 1rem 0;
-`;
-
-const BannerHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-
-  h4 {
-    margin: 0;
-  }
-`;
-
 const HeroImageContainer = styled.div`
   border: 1px solid #e0e0e0;
   padding: 1rem;

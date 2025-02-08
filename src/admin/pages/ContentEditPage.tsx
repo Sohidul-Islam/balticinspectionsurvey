@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useContent, useUpdateContent } from "../../services/contentApi";
+import { useUpdateContent } from "../../services/contentApi";
 import { Loader } from "../components/Loader";
 import ContentEditor from "../components/ContentEditor";
 
@@ -32,6 +32,8 @@ const ContentEditPage = () => {
 
   const updateContent = useUpdateContent();
   const [sections, setSections] = useState([]);
+
+  console.log({ sections });
 
   useEffect(() => {
     if (contentData?.sections) {

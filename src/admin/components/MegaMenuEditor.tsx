@@ -11,15 +11,8 @@ import {
   useDeleteMegaMenu,
   type MegaMenu,
 } from "../../services/menuApi";
-import {
-  FiPlus,
-  FiEdit2,
-  FiTrash2,
-  FiChevronDown,
-  FiList,
-} from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiList } from "react-icons/fi";
 import { Loader } from "./Loader";
-import { SubMegaMenuEditor } from "./SubMegaMenuEditor";
 import { useNavigate } from "react-router-dom";
 import { PathHelper, PathPreview } from "./MenuConsole";
 
@@ -224,7 +217,7 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
   const [selectedMegaMenu, setSelectedMegaMenu] = useState<MegaMenu | null>(
     null
   );
-  const [expandedMegaMenu, setExpandedMegaMenu] = useState<number | null>(null);
+  // const [expandedMegaMenu, setExpandedMegaMenu] = useState<number | null>(null);
   const { data: megaMenus, isLoading } = useMegaMenus(menuId);
   const createMegaMenu = useCreateMegaMenu(menuId);
   const updateMegaMenu = useUpdateMegaMenu(menuId);
@@ -249,9 +242,14 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
           ...data,
           id: selectedMegaMenu.id,
           menuId,
+          enableQuickLink: false,
         });
       } else {
-        await createMegaMenu.mutateAsync({ ...data, menuId });
+        await createMegaMenu.mutateAsync({
+          ...data,
+          menuId,
+          enableQuickLink: false,
+        });
       }
       reset();
       setSelectedMegaMenu(null);
@@ -276,10 +274,6 @@ export const MegaMenuEditor = ({ menuId }: MegaMenuEditorProps) => {
     setSelectedMegaMenu(megaMenu);
     setValue("title", megaMenu.title);
     setValue("path", megaMenu.path);
-  };
-
-  const handleMegaMenuClick = (megaMenu: MegaMenu) => {
-    setExpandedMegaMenu(expandedMegaMenu === megaMenu.id ? null : megaMenu.id);
   };
 
   const currentPath = watch("path");

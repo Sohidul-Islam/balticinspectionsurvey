@@ -14,6 +14,7 @@ import Logo from "../assets/balticlogowhite.svg?react";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../services/axios";
 import { parseIfJson } from "../utils";
+import { useMenus } from "../services/menuApi";
 
 interface FooterData {
   id: string;
@@ -42,7 +43,10 @@ const Footer = () => {
     },
   });
 
-  console.log({ footerData });
+  const { data: menus } = useMenus();
+
+  const quickLinkData =
+    menus?.data.filter((item) => item?.enableQuickLink) || [];
 
   // if (!footerData?.isActive) {
   //   return null;
@@ -74,15 +78,20 @@ const Footer = () => {
           </CompanyInfo>
         </FooterSection>
 
-        <FooterSection>
-          <h3>Quick Links</h3>
-          <QuickLinks>
-            <QuickLink to="/">Home</QuickLink>
+        {quickLinkData?.length > 0 && (
+          <FooterSection>
+            <h3>Quick Links</h3>
+            <QuickLinks>
+              {quickLinkData?.map((item) => {
+                return <QuickLink to={item.path}>{item?.title}</QuickLink>;
+              })}
+              {/* <QuickLink to="/">Home</QuickLink>
             <QuickLink to="/about">About Us</QuickLink>
             <QuickLink to="/services">Services</QuickLink>
-            <QuickLink to="/projects">Projects</QuickLink>
-          </QuickLinks>
-        </FooterSection>
+            <QuickLink to="/projects">Projects</QuickLink> */}
+            </QuickLinks>
+          </FooterSection>
+        )}
 
         <FooterSection>
           <h3>Contact Info</h3>
@@ -225,6 +234,7 @@ const QuickLink = styled(Link)`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-transform: capitalize;
 
   &:before {
     content: "→";

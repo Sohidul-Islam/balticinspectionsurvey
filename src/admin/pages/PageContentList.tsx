@@ -100,15 +100,6 @@ const PageTitle = styled.h3`
   margin-bottom: 1rem;
 `;
 
-const PagePath = styled.div`
-  font-size: 0.9rem;
-  color: #636e72;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  background: #f8faff;
-  border-radius: 6px;
-`;
-
 const SectionCount = styled.div`
   font-size: 0.9rem;
   color: #636e72;
@@ -165,7 +156,7 @@ const PageContentList = () => {
   );
   const { mutate: deleteContent } = useDeleteContent();
 
-  const { data: pages, isLoading: isLoadingPages } = useQuery<Content[]>({
+  const { data: pages } = useQuery<Content[]>({
     queryKey: ["pages", selectedMenu, selectedMegaMenu, selectedSubMenu],
     queryFn: async () => {
       const { data } = await axiosInstance.get("/api/content", {

@@ -6,6 +6,7 @@ export interface Menu {
   id: number;
   title: string;
   path: string;
+  enableQuickLink: boolean;
 }
 
 export interface MegaMenu {
@@ -13,6 +14,7 @@ export interface MegaMenu {
   menuId: number;
   title: string;
   path: string;
+  enableQuickLink: boolean;
 }
 
 export interface SubMegaMenu {
@@ -21,6 +23,7 @@ export interface SubMegaMenu {
   menuId: number;
   title: string;
   path: string;
+  enableQuickLink: boolean;
 }
 
 interface ApiResponse<T> {

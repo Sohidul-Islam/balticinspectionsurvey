@@ -1,20 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { motion } from "framer-motion";
 
 const EditorContainer = styled.div`
   padding: 1rem;
   background: white;
   border-radius: 8px;
   margin-top: 1rem;
-`;
-
-const ImageUpload = styled.div`
-  border: 2px dashed #ddd;
-  padding: 2rem;
-  text-align: center;
-  border-radius: 8px;
-  cursor: pointer;
 `;
 
 interface ComponentEditorProps {

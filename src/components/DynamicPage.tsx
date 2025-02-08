@@ -1,6 +1,6 @@
-import { Fragment, useEffect, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */
 import styled from "styled-components";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   HeroSectionContainer,
   HeroSectionContainerSecondary,
@@ -8,8 +8,6 @@ import {
   ListSectionContainer,
   TextSectionContainer,
 } from "./DynamicRender";
-import { demoOfRender, footerData } from "../mockup/componentsformate";
-import Footer from "./Footer";
 import axiosInstance from "../services/axios";
 import { Loader } from "../admin/components/Loader";
 import { useQuery } from "@tanstack/react-query";
@@ -25,10 +23,6 @@ const PageContainer = styled.div`
 //   padding: 2rem;
 // `;
 
-const Section = styled.section`
-  margin-bottom: 3rem;
-`;
-
 export const sectionComponents = {
   hero: HeroSectionContainer,
   heroSlider: HeroSectionContainerSecondary,
@@ -40,8 +34,8 @@ export const sectionComponents = {
 
 const DynamicPage = () => {
   const location = useLocation();
-  const [content, setContent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // const [content, setContent] = useState(null);
+  // const [loading, setLoading] = useState(true);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["content", { path: location.pathname }],

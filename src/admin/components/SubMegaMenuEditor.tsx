@@ -184,9 +184,15 @@ export const SubMegaMenuEditor = ({
           id: selectedSubMenu.id,
           menuId,
           megaMenuId,
+          enableQuickLink: false,
         });
       } else {
-        await createSubMenu.mutateAsync({ ...data, menuId, megaMenuId });
+        await createSubMenu.mutateAsync({
+          ...data,
+          menuId,
+          megaMenuId,
+          enableQuickLink: false,
+        });
       }
       reset();
       setSelectedSubMenu(null);

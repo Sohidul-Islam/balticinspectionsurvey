@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiUpload, FiImage, FiX, FiCamera } from "react-icons/fi";
+import { FiUpload, FiX, FiCamera } from "react-icons/fi";
 import axiosInstance from "../../services/axios";
 import { toast } from "react-hot-toast";
 import { BASE_URL } from "../../services/api";

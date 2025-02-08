@@ -72,15 +72,6 @@ const Input = styled.input`
   font-size: 1rem;
 `;
 
-const TextArea = styled.textarea`
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  min-height: 150px;
-`;
-
 const Button = styled(motion.button)`
   padding: 1rem 2rem;
   background: #2d3436;
@@ -128,6 +119,8 @@ const PageBuilder = () => {
   });
   const [selectedComponent, setSelectedComponent] =
     useState<PageComponentData | null>(null);
+
+  console.log({ selectedComponent });
 
   const handleAddComponent = (type: string) => {
     const newComponent: PageComponentData = {
@@ -235,7 +228,7 @@ const PageBuilder = () => {
                   draggableId={component.id}
                   index={index}
                 >
-                  {(provided, snapshot) => (
+                  {(provided) => (
                     <PageComponent
                       ref={provided.innerRef}
                       {...provided.draggableProps}

@@ -10,7 +10,6 @@ import {
   RiMapPinLine,
   RiPhoneLine,
   RiSaveLine,
-  RiToggleLine,
 } from "react-icons/ri";
 import axiosInstance from "../../../services/axios";
 import { parseIfJson } from "../../../utils";
@@ -527,68 +526,6 @@ const LoadingSpinner = styled.div<{ small?: boolean }>`
       transform: rotate(360deg);
     }
   }
-`;
-
-const ToggleWrapper = styled.div`
-  padding: 0.5rem 0;
-`;
-
-const ToggleLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-  color: #4b5563;
-`;
-
-const Toggle = styled.input`
-  appearance: none;
-  width: 50px;
-  height: 28px;
-  background: #e5e7eb;
-  border-radius: 999px;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:checked {
-    background: #10b981;
-  }
-
-  &:before {
-    content: "";
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    background: white;
-    transition: all 0.3s ease;
-  }
-
-  &:checked:before {
-    transform: translateX(22px);
-  }
-`;
-
-const StatusBadge = styled.span<{ active: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  ${({ active }) =>
-    active
-      ? `
-    background: #d1fae5;
-    color: #059669;
-  `
-      : `
-    background: #fee2e2;
-    color: #dc2626;
-  `}
 `;
 
 export default FooterManagement;

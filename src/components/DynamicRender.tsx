@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import {
@@ -287,13 +287,6 @@ const ImageCard = styled(motion.div)`
   &:hover img {
     transform: scale(1.1);
   }
-`;
-
-const GridImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
 `;
 
 const ListWrapper = styled(motion.section)`

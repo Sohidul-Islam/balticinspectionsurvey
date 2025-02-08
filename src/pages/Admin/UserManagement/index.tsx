@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../../../services/axios";
 import { toast } from "react-hot-toast";
-import { motion } from "framer-motion";
 import EditModal from "./EditModal";
 
 interface User {
@@ -19,7 +18,7 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { data: users, isLoading } = useQuery({
+  const { data: users } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
       const response = await axiosInstance.get("/api/users/all");

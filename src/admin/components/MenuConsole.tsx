@@ -138,6 +138,44 @@ const MenuCard = styled(motion.div)`
   }
 `;
 
+const ToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+`;
+
+const Toggle = styled.input`
+  appearance: none;
+  width: 50px;
+  height: 28px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:checked {
+    background: #10b981;
+  }
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    background: white;
+    transition: all 0.3s ease;
+  }
+
+  &:checked:before {
+    transform: translateX(22px);
+  }
+`;
+
 const schema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   path: z
@@ -154,6 +192,7 @@ const schema = z.object({
       message: "Path cannot end with a forward slash (except root path)",
     })
     .transform((value) => value.toLowerCase()),
+  enableQuickLink: z.boolean().default(false),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -193,6 +232,7 @@ const MenuConsole = () => {
     defaultValues: {
       title: "",
       path: "/",
+      enableQuickLink: false,
     },
   });
 
@@ -204,6 +244,7 @@ const MenuConsole = () => {
     if (selectedMenu) {
       setValue("title", selectedMenu.title);
       setValue("path", selectedMenu.path);
+      setValue("enableQuickLink", selectedMenu.enableQuickLink);
     }
   }, [selectedMenu, setValue]);
 
@@ -237,7 +278,7 @@ const MenuConsole = () => {
 
   const handleCancel = () => {
     setSelectedMenu(null);
-    reset({ title: "", path: "/" });
+    reset({ title: "", path: "/", enableQuickLink: false });
   };
 
   const handleDelete = async (e: React.MouseEvent, menuId: number) => {
@@ -247,7 +288,7 @@ const MenuConsole = () => {
         await deleteMenu.mutateAsync(menuId);
         if (selectedMenu?.id === menuId) {
           setSelectedMenu(null);
-          reset({ title: "", path: "/" });
+          reset({ title: "", path: "/", enableQuickLink: false });
         }
       } catch (error) {
         console.error(error);
@@ -302,6 +343,18 @@ const MenuConsole = () => {
           <PathPreview>Preview: {currentPath}</PathPreview>
         </FormGroup>
 
+        <FormGroup>
+          <Label>Enable Quick Link</Label>
+          <ToggleWrapper>
+            <Toggle
+              type="checkbox"
+              checked={watch("enableQuickLink")}
+              onChange={(e) => setValue("enableQuickLink", e.target.checked)}
+            />
+            <span>Show in Quick Links section</span>
+          </ToggleWrapper>
+        </FormGroup>
+
         <div style={{ display: "flex", gap: "1rem" }}>
           <Button
             type="submit"
@@ -341,6 +394,17 @@ const MenuConsole = () => {
               >
                 <h3>{menu?.title}</h3>
                 <p style={{ fontFamily: "monospace" }}>{menu?.path}</p>
+                <div
+                  style={{
+                    marginTop: "0.5rem",
+                    fontSize: "0.875rem",
+                    color: menu?.enableQuickLink ? "#10b981" : "#6b7280",
+                  }}
+                >
+                  {menu?.enableQuickLink
+                    ? "Quick Link Enabled"
+                    : "Quick Link Disabled"}
+                </div>
                 <ActionButtons>
                   <IconButton
                     onClick={() => handleEdit(menu)}
