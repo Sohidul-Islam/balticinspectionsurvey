@@ -92,10 +92,10 @@ export const Users = () => {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">User Management</h2>
-        <p className="text-gray-600 mt-2">Manage and monitor user accounts</p>
+    <div className="p-0 md:p-6 mx-auto">
+      <div className="mb-6 md:mb-8">
+        <h2 className="text-xl md:text-3xl font-bold text-gray-800">User Management</h2>
+        <p className="text-xs md:text-base text-gray-600 mt-2">Manage and monitor user accounts</p>
       </div>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -103,43 +103,44 @@ export const Users = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="hidden md:table-cell px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="hidden md:table-cell px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Verified
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="hidden md:table-cell px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Password Token
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {users?.map((user) => (
-                <tr
-                  key={user.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
                       {user.username}
                     </div>
+                    {/* Show email on mobile as secondary info */}
+                    <div className="md:hidden text-xs text-gray-500 mt-1">
+                      {user.email}
+                    </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-500">{user.email}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         user.status === "approved"
                           ? "bg-green-100 text-green-800"
                           : user.status === "rejected"
@@ -147,11 +148,10 @@ export const Users = () => {
                           : "bg-yellow-100 text-yellow-800"
                       }`}
                     >
-                      {user.status.charAt(0).toUpperCase() +
-                        user.status.slice(1)}
+                      {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
                     </span>
                   </td>
-                  <td>
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                     <button
                       disabled={user.isVerified}
                       onClick={() => {
@@ -160,7 +160,7 @@ export const Users = () => {
                           userData: { isVerified: true },
                         });
                       }}
-                      className={`inline-flex items-center px-3 py-1.5 rounded-md text-sm ${
+                      className={`inline-flex items-center px-3 py-1.5 rounded-md text-xs md:text-sm ${
                         user.isVerified
                           ? "bg-green-500 hover:bg-green-600"
                           : "bg-gray-500 hover:bg-gray-600"
@@ -169,7 +169,7 @@ export const Users = () => {
                       {user.isVerified ? "Verified" : "Mark as Verified"}
                     </button>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm">
                     {user.resetPasswordToken && user.resetPasswordExpiry ? (
                       <button
                         onClick={() => {
@@ -177,7 +177,7 @@ export const Users = () => {
                             `/reset-password?token=${user.resetPasswordToken}&email=${user.email}`
                           );
                         }}
-                        className="inline-flex items-center px-3 py-1.5 rounded-md text-sm bg-blue-50 text-blue-700 hover:bg-blue-100"
+                        className="inline-flex items-center px-3 py-1.5 rounded-md text-xs md:text-sm bg-blue-50 text-blue-700 hover:bg-blue-100"
                       >
                         Reset Password Link
                       </button>
@@ -185,85 +185,80 @@ export const Users = () => {
                       "N/A"
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <button
-                      onClick={() =>
-                        updateStatusMutation.mutate({
-                          userId: user.id,
-                          status: "approved",
-                        })
-                      }
-                      disabled={
-                        user.status === "approved" ||
-                        authData?.user?.id === user.id
-                      }
-                      className={`inline-flex items-center px-3 py-1.5 rounded-md text-sm
-                        ${
-                          user.status === "approved"
-                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                            : "bg-green-50 text-green-700 hover:bg-green-100"
-                        }`}
-                    >
-                      <FiCheck className="w-4 h-4 mr-1" />
-                      Approve
-                    </button>
-                    <button
-                      onClick={() =>
-                        updateStatusMutation.mutate({
-                          userId: user.id,
-                          status: "rejected",
-                        })
-                      }
-                      disabled={
-                        user.status === "rejected" ||
-                        authData?.user?.id === user.id
-                      }
-                      className={`inline-flex items-center px-3 py-1.5 rounded-md text-sm
-                        ${
-                          user.status === "rejected" ||
-                          authData?.user?.id === user.id
-                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                            : "bg-red-50 text-red-700 hover:bg-red-100"
-                        }`}
-                    >
-                      <FiX className="w-4 h-4 mr-1" />
-                      Reject
-                    </button>
-                    <button
-                      onClick={() => {
-                        const newName = prompt("Enter new name:", user.name);
-                        if (newName) {
-                          updateUserMutation.mutate({
+                  <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex flex-col md:flex-row gap-2 md:space-x-2">
+                      <button
+                        onClick={() =>
+                          updateStatusMutation.mutate({
                             userId: user.id,
-                            userData: { username: newName },
-                          });
+                            status: "approved",
+                          })
                         }
-                      }}
-                      className="inline-flex items-center px-3 py-1.5 rounded-md text-sm bg-blue-50 text-blue-700 hover:bg-blue-100"
-                    >
-                      <FiEdit2 className="w-4 h-4 mr-1" />
-                      Edit
-                    </button>
-                    <button
-                      disabled={authData?.user?.id === user.id}
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you want to delete this user?"
-                          )
-                        ) {
-                          deleteUserMutation.mutate(user.id);
+                        disabled={user.status === "approved" || authData?.user?.id === user.id}
+                        className={`inline-flex items-center px-2 md:px-3 py-1 md:py-1.5 rounded-md text-xs md:text-sm
+                          ${
+                            user.status === "approved"
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              : "bg-green-50 text-green-700 hover:bg-green-100"
+                          }`}
+                      >
+                        <FiCheck className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                        <span className="hidden md:inline">Approve</span>
+                      </button>
+                      
+                      <button
+                        onClick={() =>
+                          updateStatusMutation.mutate({
+                            userId: user.id,
+                            status: "rejected",
+                          })
                         }
-                      }}
-                      className={`${
-                        authData?.user?.id === user.id
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : ""
-                      } inline-flex items-center px-3 py-1.5 rounded-md text-sm bg-gray-50 text-gray-700 hover:bg-gray-100`}
-                    >
-                      <FiTrash2 className="w-4 h-4 mr-1" />
-                      Delete
-                    </button>
+                        disabled={user.status === "rejected" || authData?.user?.id === user.id}
+                        className={`inline-flex items-center px-2 md:px-3 py-1 md:py-1.5 rounded-md text-xs md:text-sm
+                          ${
+                            user.status === "rejected" || authData?.user?.id === user.id
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              : "bg-red-50 text-red-700 hover:bg-red-100"
+                          }`}
+                      >
+                        <FiX className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                        <span className="hidden md:inline">Reject</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const newName = prompt("Enter new name:", user.name);
+                          if (newName) {
+                            updateUserMutation.mutate({
+                              userId: user.id,
+                              userData: { username: newName },
+                            });
+                          }
+                        }}
+                        className="inline-flex items-center px-2 md:px-3 py-1 md:py-1.5 rounded-md text-xs md:text-sm bg-blue-50 text-blue-700 hover:bg-blue-100"
+                      >
+                        <FiEdit2 className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                        <span className="hidden md:inline">Edit</span>
+                      </button>
+
+                      <button
+                        disabled={authData?.user?.id === user.id}
+                        onClick={() => {
+                          if (window.confirm("Are you sure you want to delete this user?")) {
+                            deleteUserMutation.mutate(user.id);
+                          }
+                        }}
+                        className={`inline-flex items-center px-2 md:px-3 py-1 md:py-1.5 rounded-md text-xs md:text-sm
+                          ${
+                            authData?.user?.id === user.id
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              : "bg-red-50 text-red-700 hover:bg-red-100"
+                          }`}
+                      >
+                        <FiTrash2 className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                        <span className="hidden md:inline">Delete</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

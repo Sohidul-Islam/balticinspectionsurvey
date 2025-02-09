@@ -151,14 +151,14 @@ const FooterManagement = () => {
                   }
                   placeholder="Enter email address"
                 />
-                {formData?.emails.length > 1 && (
+     
                   <RemoveButton
                     type="button"
                     onClick={() => handleRemoveField("emails", index)}
                   >
                     <RiDeleteBinLine />
                   </RemoveButton>
-                )}
+                
               </FieldGroup>
             ))}
           </Section>
@@ -179,14 +179,14 @@ const FooterManagement = () => {
                   }
                   placeholder="Enter phone number"
                 />
-                {formData?.phones?.length > 1 && (
+    
                   <RemoveButton
                     type="button"
                     onClick={() => handleRemoveField("phones", index)}
                   >
                     <RiDeleteBinLine />
                   </RemoveButton>
-                )}
+                
               </FieldGroup>
             ))}
           </Section>
@@ -210,14 +210,14 @@ const FooterManagement = () => {
                   }
                   placeholder="Enter address"
                 />
-                {formData?.addresses?.length > 1 && (
+          
                   <RemoveButton
                     type="button"
                     onClick={() => handleRemoveField("addresses", index)}
                   >
                     <RiDeleteBinLine />
                   </RemoveButton>
-                )}
+                
               </FieldGroup>
             ))}
           </Section>
@@ -316,7 +316,11 @@ const Container = styled.div`
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  @media (max-width: 768px) {
+    padding: 0.25rem;
+  }
 `;
+
 
 const Header = styled.div`
   display: flex;
@@ -328,7 +332,11 @@ const Header = styled.div`
 const Title = styled.h2`
   font-size: 1.8rem;
   color: #1a1a1a;
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
+
 
 const Form = styled.form`
   display: flex;
@@ -390,9 +398,14 @@ const Button = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+  }
 `;
 
 const EditButton = styled(Button)`
+
   background: #3b82f6;
   color: white;
   border: none;
@@ -466,7 +479,14 @@ const PreviewSection = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 `;
+
+
+
 
 const InfoCard = styled.div`
   background: white;
