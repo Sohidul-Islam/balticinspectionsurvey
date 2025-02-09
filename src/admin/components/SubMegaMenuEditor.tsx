@@ -84,7 +84,12 @@ const Button = styled(motion.button)`
   &.cancel {
     background: #636e72;
   }
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
 `;
+
 
 const SubMenuList = styled.div`
   display: grid;

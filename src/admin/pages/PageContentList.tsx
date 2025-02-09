@@ -15,7 +15,11 @@ import {
 
 const Container = styled.div`
   padding: 2rem;
+  @media (max-width: 768px) {
+    padding: 0rem;
+  }
 `;
+
 
 const Header = styled.div`
   display: flex;
@@ -43,7 +47,12 @@ const SelectContainer = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0.5rem;
+  }
 `;
+
 
 const Select = styled.select`
   width: 100%;
@@ -61,7 +70,11 @@ const Select = styled.select`
 const Title = styled.h1`
   font-size: 2rem;
   color: #2d3436;
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
+
 
 const CreateButton = styled(Link)`
   padding: 0.8rem 1.5rem;
@@ -79,7 +92,12 @@ const CreateButton = styled(Link)`
   &:hover {
     background: #00a187;
   }
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
 `;
+
 
 const PageGrid = styled.div`
   display: grid;

@@ -20,19 +20,36 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
   min-height: 100vh;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-const Sidebar = styled(motion.aside)<{ $isCollapsed: boolean }>`
+const Sidebar = styled(motion.aside)<{ $isCollapsed: boolean; $isMobile?: boolean }>`
   background: #2d3436;
   color: white;
   width: ${({ $isCollapsed }) => ($isCollapsed ? "80px" : "250px")};
   transition: width 0.3s ease;
   padding: 2rem 1rem;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    left: ${({ $isMobile }) => ($isMobile ? "-100%" : "0")};
+    width: 250px;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const Content = styled.main`
   padding: 2rem;
   background: #f8f9fa;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const Logo = styled.div`
@@ -143,8 +160,50 @@ const ChevronIcon = styled(motion.div)`
   align-items: center;
 `;
 
+const MobileHeader = styled.div`
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #2d3436;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+`;
+
+const MobileMenuButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+`;
+
+const Overlay = styled(motion.div)`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+`;
+
 const AdminLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
   const location = useLocation();
 
@@ -176,94 +235,127 @@ const AdminLayout = () => {
     setExpandedMenu(expandedMenu === text ? null : text);
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <Container>
-      <Sidebar
-        $isCollapsed={isCollapsed}
-        initial={false}
-        animate={{ width: isCollapsed ? 80 : 250 }}
-      >
-        <ToggleButton
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
+    <>
+      <MobileHeader>
+        <MobileMenuButton onClick={toggleMobileMenu}>
           <FiMenu />
-        </ToggleButton>
+        </MobileMenuButton>
+        <span>Admin Dashboard</span>
+      </MobileHeader>
 
-        <Logo>{!isCollapsed && <span>Admin</span>}</Logo>
+      <Container>
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <Overlay
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeMobileMenu}
+            />
+          )}
+        </AnimatePresence>
 
-        <nav>
-          {navItems.map((item) => (
-            <NavItemContainer key={item.text}>
-              {"items" in item ? (
-                <>
-                  <NavItemButton
-                    $active={item?.items?.some(
-                      (subItem) => location.pathname === subItem.path
-                    )}
-                    onClick={() => handleMenuClick(item.text)}
+        <Sidebar
+          $isCollapsed={isCollapsed}
+          $isMobile={!isMobileMenuOpen}
+          initial={false}
+          animate={{ 
+            width: isCollapsed ? 80 : 250,
+            x: isMobileMenuOpen ? 0 : (window.innerWidth <= 768 ? -250 : 0)
+          }}
+        >
+          <ToggleButton
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            style={{ display: window.innerWidth <= 768 ? 'none' : 'flex' }}
+          >
+            <FiMenu />
+          </ToggleButton>
+
+          <Logo>{!isCollapsed && <span>Admin</span>}</Logo>
+
+          <nav onClick={(e) => e.stopPropagation()}>
+            {navItems.map((item) => (
+              <NavItemContainer key={item.text}>
+                {"items" in item ? (
+                  <>
+                    <NavItemButton
+                      $active={item?.items?.some(
+                        (subItem) => location.pathname === subItem.path
+                      )}
+                      onClick={() => handleMenuClick(item.text)}
+                    >
+                      <div className="icon-container">
+                        {item.icon}
+                        <NavText $isCollapsed={isCollapsed}>{item.text}</NavText>
+                      </div>
+                      {!isCollapsed && (
+                        <ChevronIcon
+                          animate={{
+                            rotate: expandedMenu === item.text ? 180 : 0,
+                          }}
+                        >
+                          <FiChevronDown />
+                        </ChevronIcon>
+                      )}
+                    </NavItemButton>
+
+                    <AnimatePresence>
+                      {!isCollapsed && expandedMenu === item.text && (
+                        <SubMenu
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                        >
+                          {item?.items?.map((subItem) => (
+                            <SubMenuItem
+                              key={subItem.path}
+                              to={subItem.path}
+                              $active={location.pathname === subItem.path}
+                            >
+                              {subItem.text}
+                            </SubMenuItem>
+                          ))}
+                        </SubMenu>
+                      )}
+                    </AnimatePresence>
+                  </>
+                ) : (
+                  <NavItem
+                    to={item.path}
+                    $active={location.pathname === item.path}
                   >
-                    <div className="icon-container">
-                      {item.icon}
-                      <NavText $isCollapsed={isCollapsed}>{item.text}</NavText>
-                    </div>
-                    {!isCollapsed && (
-                      <ChevronIcon
-                        animate={{
-                          rotate: expandedMenu === item.text ? 180 : 0,
-                        }}
-                      >
-                        <FiChevronDown />
-                      </ChevronIcon>
-                    )}
-                  </NavItemButton>
+                    {item.icon}
+                    <NavText $isCollapsed={isCollapsed}>{item.text}</NavText>
+                  </NavItem>
+                )}
+              </NavItemContainer>
+            ))}
 
-                  <AnimatePresence>
-                    {!isCollapsed && expandedMenu === item.text && (
-                      <SubMenu
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                      >
-                        {item?.items?.map((subItem) => (
-                          <SubMenuItem
-                            key={subItem.path}
-                            to={subItem.path}
-                            $active={location.pathname === subItem.path}
-                          >
-                            {subItem.text}
-                          </SubMenuItem>
-                        ))}
-                      </SubMenu>
-                    )}
-                  </AnimatePresence>
-                </>
-              ) : (
-                <NavItem
-                  to={item.path}
-                  $active={location.pathname === item.path}
-                >
-                  {item.icon}
-                  <NavText $isCollapsed={isCollapsed}>{item.text}</NavText>
-                </NavItem>
-              )}
-            </NavItemContainer>
-          ))}
+            <NavItemButton onClick={() => logout()}>
+              <div className="icon-container">
+                <BiLogOut />
+                <NavText $isCollapsed={false}>Log out</NavText>
+              </div>
+            </NavItemButton>
+          </nav>
+        </Sidebar>
 
-          <NavItemButton onClick={() => logout()}>
-            <div className="icon-container">
-              <BiLogOut />
-              <NavText $isCollapsed={false}>Log out</NavText>
-            </div>
-          </NavItemButton>
-        </nav>
-      </Sidebar>
-
-      <Content>
-        <Outlet />
-      </Content>
-    </Container>
+        <Content>
+          <Outlet />
+        </Content>
+      </Container>
+    </>
   );
 };
 

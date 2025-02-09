@@ -6,17 +6,28 @@ import { Loader } from "../components/Loader";
 
 const Container = styled.div`
   padding: 2rem;
+  @media (max-width: 768px) {
+    padding: 0rem;
+  }
 `;
 
 const Title = styled.h1`
   font-size: 2rem;
   color: #2d3436;
   margin-bottom: 2rem;
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
+
 
 const MenuSelector = styled.div`
   margin-bottom: 2rem;
+  @media (max-width: 768px) {
+    margin-bottom: 1rem;
+  }
 `;
+
 
 const Select = styled.select`
   padding: 0.8rem;
@@ -24,6 +35,10 @@ const Select = styled.select`
   border-radius: 8px;
   font-size: 1rem;
   min-width: 200px;
+  @media (max-width: 768px) {
+    min-width: 100%;
+  }
+
 
   &:focus {
     outline: none;
@@ -36,7 +51,13 @@ const NoMenuMessage = styled.div`
   padding: 2rem;
   color: #636e72;
   font-size: 1.1rem;
+  @media (max-width: 768px) {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
 `;
+
+
 
 const MegaMenuPage = () => {
   const [selectedMenuId, setSelectedMenuId] = useState<number | null>(null);

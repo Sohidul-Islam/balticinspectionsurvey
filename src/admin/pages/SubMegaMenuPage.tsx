@@ -8,6 +8,9 @@ import { FiArrowLeft } from "react-icons/fi";
 
 const Container = styled.div`
   padding: 2rem;
+  @media (max-width: 768px) {
+    padding: 0rem;
+  }
 `;
 
 const Header = styled.div`
@@ -21,7 +24,11 @@ const Breadcrumb = styled.div`
   margin-bottom: 1rem;
   color: #636e72;
   font-size: 0.9rem;
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `;
+
 
 const Title = styled.div`
   display: flex;
@@ -33,10 +40,23 @@ const Title = styled.div`
     font-size: 2rem;
     color: #2d3436;
     margin: 0;
+
+    @media (max-width: 768px) {
+    font-size: 1.25rem;
   }
+  }
+
+  @media (max-width: 768px) {
+    
+    align-items: flex-center;
+    gap: 0.5rem;
+  }
+
 `;
 
+
 const BackButton = styled(motion.button)`
+
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -50,7 +70,11 @@ const BackButton = styled(motion.button)`
   &:hover {
     color: #2d3436;
   }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `;
+
 
 const SubMegaMenuPage = () => {
   const { menuId, megaMenuId } = useParams();

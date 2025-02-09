@@ -8,7 +8,11 @@ const Container = styled.div`
   background: white;
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  @media (max-width: 768px) {
+    padding: 0rem;
+  }
 `;
+
 
 const MenuList = styled.div`
   margin-top: 2rem;

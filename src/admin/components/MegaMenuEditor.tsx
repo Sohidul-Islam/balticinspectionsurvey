@@ -31,7 +31,11 @@ const Title = styled.h2`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
+
 
 const Form = styled(motion.form)`
   margin-bottom: 2rem;
@@ -86,9 +90,15 @@ const Button = styled(motion.button)`
   &.cancel {
     background: #636e72;
   }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
 `;
 
 const MegaMenuList = styled.div`
+
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
@@ -194,7 +204,12 @@ const ViewSubMenusButton = styled(motion.button)`
   svg {
     font-size: 1.1rem;
   }
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
 `;
+
 
 const schema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
