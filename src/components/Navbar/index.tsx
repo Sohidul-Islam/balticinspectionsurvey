@@ -344,25 +344,27 @@ const Navbar = () => {
         </LogoContainer>
 
         <MenuContainer>
-          {menus?.data.map((menu) => (
-            <MenuItem
-              key={menu.id}
-              onMouseEnter={() => setHoveredMenu(menu.id)}
-              onClick={() => {
-                setHoveredMenu(null);
-              }}
-              // Removed to prevent setting hovered menu to null on mouse leave
-            >
-              <NavLink to={menu?.path}>
-                <MenuTitle
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {menu.title}
-                </MenuTitle>
-              </NavLink>
-            </MenuItem>
-          ))}
+          {menus?.data
+            .sort((a, b) => a.id - b.id)
+            .map((menu) => (
+              <MenuItem
+                key={menu.id}
+                onMouseEnter={() => setHoveredMenu(menu.id)}
+                onClick={() => {
+                  setHoveredMenu(null);
+                }}
+                // Removed to prevent setting hovered menu to null on mouse leave
+              >
+                <NavLink to={menu?.path}>
+                  <MenuTitle
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {menu.title}
+                  </MenuTitle>
+                </NavLink>
+              </MenuItem>
+            ))}
 
           <NavLink to="/contact">
             <MenuTitle whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -385,17 +387,19 @@ const Navbar = () => {
                   transition={{ duration: 0.2 }}
                   onMouseLeave={() => setHoveredMenu(null)}
                 >
-                  {megaMenus.data.map((megaMenu) => (
-                    <MegaMenuSection key={megaMenu.id}>
-                      <NavLink to={megaMenu?.path}>
-                        <h3>{megaMenu.title}</h3>
-                      </NavLink>
-                      <SubMegaMenuList
-                        menuId={hoveredMenu}
-                        megaMenuId={megaMenu.id}
-                      />
-                    </MegaMenuSection>
-                  ))}
+                  {megaMenus.data
+                    ?.sort((a, b) => a.id - b.id)
+                    .map((megaMenu) => (
+                      <MegaMenuSection key={megaMenu.id}>
+                        <NavLink to={megaMenu?.path}>
+                          <h3>{megaMenu.title}</h3>
+                        </NavLink>
+                        <SubMegaMenuList
+                          menuId={hoveredMenu}
+                          megaMenuId={megaMenu.id}
+                        />
+                      </MegaMenuSection>
+                    ))}
                 </MegaMenuGrid>
               )}
             </AnimatePresence>
@@ -425,78 +429,82 @@ const Navbar = () => {
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 20 }}
               >
-                {menus?.data.map((menu) => (
-                  <MobileMenuItem key={menu.id}>
-                    <MobileMenuTitle to={menu.path}>
-                      {menu.title}
-                      <motion.div
-                        animate={{ rotate: expandedMenu === menu.id ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
-                        onClick={() =>
-                          setExpandedMenu(
-                            expandedMenu === menu.id ? null : menu.id
-                          )
-                        }
-                      >
-                        <FiChevronDown />
-                      </motion.div>
-                    </MobileMenuTitle>
+                {menus?.data
+                  ?.sort((a, b) => a.id - b.id)
+                  .map((menu) => (
+                    <MobileMenuItem key={menu.id}>
+                      <MobileMenuTitle to={menu.path}>
+                        {menu.title}
+                        <motion.div
+                          animate={{
+                            rotate: expandedMenu === menu.id ? 180 : 0,
+                          }}
+                          transition={{ duration: 0.2 }}
+                          onClick={() =>
+                            setExpandedMenu(
+                              expandedMenu === menu.id ? null : menu.id
+                            )
+                          }
+                        >
+                          <FiChevronDown />
+                        </motion.div>
+                      </MobileMenuTitle>
 
-                    <AnimatePresence>
-                      {expandedMenu === menu.id &&
-                        megaMenus?.data
-                          ?.filter((megaMenu) => megaMenu.menuId === menu.id)
-                          .map((megaMenu) => (
-                            <MobileMegaMenu
-                              key={megaMenu.id}
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <MobileMegaMenuTitle to={megaMenu.path}>
-                                {megaMenu.title}
-                                <motion.div
-                                  animate={{
-                                    rotate:
-                                      expandedMegaMenu === megaMenu.id
-                                        ? 180
-                                        : 0,
-                                  }}
-                                  transition={{ duration: 0.2 }}
-                                  onClick={() => {
-                                    setExpandedMegaMenu(
-                                      expandedMegaMenu === megaMenu.id
-                                        ? null
-                                        : megaMenu.id
-                                    );
-                                  }}
-                                >
-                                  <FiChevronDown />
-                                </motion.div>
-                              </MobileMegaMenuTitle>
-
-                              <AnimatePresence>
-                                {expandedMegaMenu === megaMenu.id && (
+                      <AnimatePresence>
+                        {expandedMenu === menu.id &&
+                          megaMenus?.data
+                            ?.filter((megaMenu) => megaMenu.menuId === menu.id)
+                            .map((megaMenu) => (
+                              <MobileMegaMenu
+                                key={megaMenu.id}
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                <MobileMegaMenuTitle to={megaMenu.path}>
+                                  {megaMenu.title}
                                   <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
+                                    animate={{
+                                      rotate:
+                                        expandedMegaMenu === megaMenu.id
+                                          ? 180
+                                          : 0,
+                                    }}
                                     transition={{ duration: 0.2 }}
+                                    onClick={() => {
+                                      setExpandedMegaMenu(
+                                        expandedMegaMenu === megaMenu.id
+                                          ? null
+                                          : megaMenu.id
+                                      );
+                                    }}
                                   >
-                                    <SubMegaMenuList
-                                      menuId={menu.id}
-                                      megaMenuId={megaMenu.id}
-                                      isMobile={true}
-                                    />
+                                    <FiChevronDown />
                                   </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </MobileMegaMenu>
-                          ))}
-                    </AnimatePresence>
-                  </MobileMenuItem>
-                ))}
+                                </MobileMegaMenuTitle>
+
+                                <AnimatePresence>
+                                  {expandedMegaMenu === megaMenu.id && (
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: "auto", opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ duration: 0.2 }}
+                                    >
+                                      <SubMegaMenuList
+                                        menuId={menu.id}
+                                        megaMenuId={megaMenu.id}
+                                        isMobile={true}
+                                      />
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </MobileMegaMenu>
+                            ))}
+                      </AnimatePresence>
+                    </MobileMenuItem>
+                  ))}
                 <NavLink to="/contact">
                   <MenuTitle
                     whileHover={{ scale: 1.05 }}
