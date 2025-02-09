@@ -133,10 +133,12 @@ const TextArea = styled.textarea`
 `;
 
 const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+  }
 `;
 
 const ListContainer = styled.div`

@@ -133,7 +133,6 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
   );
 };
 
-
 const Container = styled.section`
   padding: 8rem 2rem;
   background: #ffffff;
