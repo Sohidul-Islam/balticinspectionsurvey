@@ -143,9 +143,9 @@ const MegaMenuGrid = styled.div`
 
 const MegaMenuSection = styled.div`
   h3 {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #2d3436;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
     font-weight: 600;
     position: relative;
     padding-bottom: 0.5rem;
@@ -369,8 +369,11 @@ const Navbar = () => {
               Contact
             </MenuTitle>
           </NavLink>
-
-          <MegaMenuContainer data-visible={!!hoveredMenu}>
+          <MegaMenuContainer
+            data-visible={
+              !!hoveredMenu && megaMenus?.data && megaMenus.data.length > 0
+            }
+          >
             <AnimatePresence mode="wait">
               {hoveredMenu && megaMenus?.data && (
                 <MegaMenuGrid
@@ -495,7 +498,10 @@ const Navbar = () => {
                   </MobileMenuItem>
                 ))}
                 <NavLink to="/contact">
-                  <MenuTitle whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <MenuTitle
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     Contact
                   </MenuTitle>
                 </NavLink>
