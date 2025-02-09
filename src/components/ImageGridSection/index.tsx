@@ -6,6 +6,7 @@ import ServiceModal from "../SharedModal/ServiceModal";
 interface ImageGridSectionProps {
   data: {
     title: string;
+    subtitle: string;
     image1: string;
     image2: string;
     image3: string;
@@ -15,10 +16,8 @@ interface ImageGridSectionProps {
 
 const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
   const [hoveredImage, setHoveredImage] = useState<number | null>(null);
-  const paragraphs = data.description.split("\n\n");
+  const paragraphs = data.description.split("\n");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [selectedData, setSelectedData] = useState(null);
 
   const ref = useRef(null);
   const onClickScrollViewRef = () => {
@@ -39,7 +38,7 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
           transition={{ duration: 0.6 }}
         >
           <Title>{data.title}</Title>
-          <SubTitle>Discover Our Gallery</SubTitle>
+          <SubTitle>{data?.subtitle}</SubTitle>
         </Header>
 
         <GalleryGrid>
@@ -306,7 +305,7 @@ const TextContent = styled(motion.div)`
 
 const Description = styled.p`
   font-size: 1.1rem;
-  line-height: 1.8;
+  line-height: 1rem;
   color: #4a5568;
   margin-bottom: 1.5rem;
 

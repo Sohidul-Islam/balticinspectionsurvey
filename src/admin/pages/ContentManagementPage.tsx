@@ -29,9 +29,7 @@ const Container = styled.div`
   @media (max-width: 768px) {
     padding: 0rem;
   }
-    
 `;
-
 
 const Header = styled.div`
   margin-bottom: 2rem;
@@ -133,10 +131,6 @@ const ContentManagementPage = () => {
     setSections(contentData.sections);
   };
 
-  const handleReorder = (newOrder: Section[]) => {
-    setSections(newOrder);
-  };
-
   const handleEdit = () => {
     // Scroll to editor
     document.querySelector(".content-editor")?.scrollIntoView({
@@ -233,7 +227,6 @@ const ContentManagementPage = () => {
 
       <ContentPreviewSecondary
         sections={sections}
-        onReorder={handleReorder}
         onEdit={handleEdit}
         onPreview={handlePreview}
       />

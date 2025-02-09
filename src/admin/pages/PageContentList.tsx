@@ -12,6 +12,7 @@ import {
   useMegaMenus,
   useSubMegaMenus,
 } from "../../services/menuApi";
+import { parseIfJson } from "../../utils";
 
 const Container = styled.div`
   padding: 2rem;
@@ -19,7 +20,6 @@ const Container = styled.div`
     padding: 0rem;
   }
 `;
-
 
 const Header = styled.div`
   display: flex;
@@ -53,7 +53,6 @@ const SelectContainer = styled.div`
   }
 `;
 
-
 const Select = styled.select`
   width: 100%;
   padding: 0.8rem;
@@ -74,7 +73,6 @@ const Title = styled.h1`
     font-size: 1.5rem;
   }
 `;
-
 
 const CreateButton = styled(Link)`
   padding: 0.8rem 1.5rem;
@@ -97,7 +95,6 @@ const CreateButton = styled(Link)`
     font-size: 0.8rem;
   }
 `;
-
 
 const PageGrid = styled.div`
   display: grid;
@@ -289,8 +286,8 @@ const PageContentList = () => {
           >
             <PageTitle>{page.title}</PageTitle>
             <SectionCount>
-              {page.sections.length} section
-              {page.sections.length !== 1 ? "s" : ""}
+              {parseIfJson(page.sections).length} section
+              {parseIfJson(page.sections).length !== 1 ? "s" : ""}
             </SectionCount>
             <ActionButtons>
               <ActionButton

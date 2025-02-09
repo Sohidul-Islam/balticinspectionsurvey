@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { motion, Reorder } from "framer-motion";
+import { motion } from "framer-motion";
 import { Section } from "../../services/contentApi";
 import { FiEye } from "react-icons/fi";
 import { sectionComponents } from "../../components/DynamicPage";
@@ -12,7 +12,6 @@ const PreviewContainer = styled.div`
   }
 `;
 
-
 const PreviewHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -23,7 +22,6 @@ const PreviewHeader = styled.div`
   }
 `;
 
-
 const PreviewTitle = styled.h2`
   font-size: 1.5rem;
   color: #2d3436;
@@ -32,8 +30,7 @@ const PreviewTitle = styled.h2`
   }
 `;
 
-
-const SectionPreview = styled(Reorder.Item)`
+const SectionPreview = styled.div`
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
@@ -57,7 +54,6 @@ const SectionPreview = styled(Reorder.Item)`
 `;
 
 const SectionType = styled.div`
-
   font-size: 0.9rem;
   color: #6b7280;
   text-transform: uppercase;
@@ -67,7 +63,6 @@ const SectionType = styled.div`
     margin-bottom: 0.5rem;
   }
 `;
-
 
 const ActionButton = styled(motion.button)`
   width: 36px;
@@ -85,8 +80,6 @@ const ActionButton = styled(motion.button)`
     height: 24px;
   }
 
-
-
   &:hover {
     background: #e0e7ff;
     color: #3b82f6;
@@ -95,14 +88,12 @@ const ActionButton = styled(motion.button)`
 
 interface ContentPreviewProps {
   sections: Section[];
-  onReorder?: (newOrder: Section[]) => void;
   onEdit?: (index: number) => void;
   onPreview?: () => void;
 }
 
 const ContentPreviewSecondary: React.FC<ContentPreviewProps> = ({
   sections,
-  onReorder,
   onPreview,
 }) => {
   return (
@@ -114,31 +105,14 @@ const ContentPreviewSecondary: React.FC<ContentPreviewProps> = ({
         </ActionButton>
       </PreviewHeader>
 
-      <Reorder.Group
-        axis="y"
-        values={sections}
-        onReorder={(value) => onReorder?.(value)}
+      <div
+        // axis="y"
+        // values={sections}
+        // onReorder={(value) => onReorder?.(value)}
         style={{ padding: "0.5rem 0" }}
       >
         {sections.map((section, index) => (
-          <SectionPreview
-            key={section.type + index}
-            value={section}
-            initial={false}
-            animate={{
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.2 },
-            }}
-            whileDrag={{
-              scale: 1.02,
-              backgroundColor: "#f8faff",
-              boxShadow: "0 8px 20px rgba(0, 0, 0, 0.12)",
-            }}
-            transition={{
-              duration: 0.2,
-            }}
-          >
+          <SectionPreview key={section.type + index}>
             <SectionType>{section.type}</SectionType>
             {/* <ActionButtons>
               <ActionButton
@@ -174,7 +148,7 @@ const ContentPreviewSecondary: React.FC<ContentPreviewProps> = ({
             </div>
           </SectionPreview>
         ))}
-      </Reorder.Group>
+      </div>
     </PreviewContainer>
   );
 };

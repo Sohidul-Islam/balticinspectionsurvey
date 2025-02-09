@@ -489,6 +489,20 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
               />
             </FormGroup>
             <FormGroup>
+              <Label>Sub Title</Label>
+              <Input
+                type="text"
+                value={section.data.subtitle || ""}
+                onChange={(e) =>
+                  handleSectionDataChange(index, {
+                    ...section.data,
+                    subtitle: e.target.value,
+                  })
+                }
+                placeholder="Enter section title"
+              />
+            </FormGroup>
+            <FormGroup>
               <Label>Description</Label>
               <TextArea
                 value={section.data.description || ""}
