@@ -79,8 +79,10 @@ const NavItem = styled(Link)<{ $active?: boolean }>`
     color: #74b9ff;
   }
 
-  svg {
-    font-size: 1.2rem;
+  .icon-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
 `;
 
@@ -335,8 +337,11 @@ const AdminLayout = () => {
                     to={item.path}
                     $active={location.pathname === item.path}
                   >
-                    {item.icon}
-                    <NavText $isCollapsed={isCollapsed}>{item.text}</NavText>
+                     <div className="icon-container">
+                     {item.icon}
+                     <NavText $isCollapsed={isCollapsed}>{item.text}</NavText>
+                     </div>
+                    
                   </NavItem>
                 )}
               </NavItemContainer>
@@ -345,7 +350,7 @@ const AdminLayout = () => {
             <NavItemButton onClick={() => logout()}>
               <div className="icon-container">
                 <BiLogOut />
-                <NavText $isCollapsed={false}>Log out</NavText>
+                <NavText $isCollapsed={isCollapsed}>Log out</NavText>
               </div>
             </NavItemButton>
           </nav>

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
+import ServiceModal from "../SharedModal/ServiceModal";
 
 interface ImageGridSectionProps {
   data: {
@@ -15,9 +16,11 @@ interface ImageGridSectionProps {
 const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
   const [hoveredImage, setHoveredImage] = useState<number | null>(null);
   const paragraphs = data.description.split("\n\n");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const ref = useRef(null);
   const onClickScrollViewRef = () => {
+    setIsModalOpen(true);
     (ref.current as unknown as HTMLElement)?.scrollIntoView({
       behavior: "smooth",
       block: "nearest",
@@ -118,9 +121,18 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
           ))}
         </TextContent>
       </ContentWrapper>
+
+      <ServiceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={data.title}
+        description={data.description}
+        image={data.image1}
+      />
     </Container>
   );
 };
+
 
 const Container = styled.section`
   padding: 8rem 2rem;

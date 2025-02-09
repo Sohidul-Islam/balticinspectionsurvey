@@ -494,6 +494,11 @@ const Navbar = () => {
                     </AnimatePresence>
                   </MobileMenuItem>
                 ))}
+                <NavLink to="/contact">
+                  <MenuTitle whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    Contact
+                  </MenuTitle>
+                </NavLink>
               </MobileMenu>
             </>
           )}

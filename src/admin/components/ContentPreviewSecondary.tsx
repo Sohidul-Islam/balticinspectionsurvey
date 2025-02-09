@@ -7,19 +7,31 @@ import { sectionComponents } from "../../components/DynamicPage";
 const PreviewContainer = styled.div`
   margin-top: 2rem;
   max-width: min(500px, 80vw);
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
+
 
 const PreviewHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  @media (max-width: 768px) {
+    margin-bottom: 0.5rem;
+  }
 `;
+
 
 const PreviewTitle = styled.h2`
   font-size: 1.5rem;
   color: #2d3436;
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
+
 
 const SectionPreview = styled(Reorder.Item)`
   background: white;
@@ -37,15 +49,25 @@ const SectionPreview = styled(Reorder.Item)`
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     z-index: 1;
   }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const SectionType = styled.div`
+
   font-size: 0.9rem;
   color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 1rem;
+  @media (max-width: 768px) {
+    margin-bottom: 0.5rem;
+  }
 `;
+
 
 const ActionButton = styled(motion.button)`
   width: 36px;
@@ -58,6 +80,12 @@ const ActionButton = styled(motion.button)`
   display: flex;
   align-items: center;
   justify-content: center;
+  @media (max-width: 768px) {
+    width: 24px;
+    height: 24px;
+  }
+
+
 
   &:hover {
     background: #e0e7ff;

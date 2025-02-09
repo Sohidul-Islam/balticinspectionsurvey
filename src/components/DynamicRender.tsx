@@ -21,6 +21,7 @@ import {
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { NavLink } from "react-router-dom";
+import ServiceModal from "./SharedModal/ServiceModal";
 
 export const ServiceCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.2);
@@ -274,7 +275,17 @@ export const ImageGrid = styled(motion.div)`
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
 `;
+
 
 const ImageCard = styled(motion.div)`
   position: relative;
@@ -550,65 +561,83 @@ export const ImageGridSectionContainer = ({
 }: {
   data: ImageGridSection["data"];
   variant?: "primary" | "secondary";
-}) => (
-  <ImageGridWrapper
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true }}
-    variants={staggerChildren}
-  >
-    <TextHeading>{data.caption || data?.title}</TextHeading>
-    <ImageGrid>
-      {/* {data.images.map((image, index) => (
-        <ImageCard key={index} variants={fadeInUp} whileHover={{ y: -10 }}>
-          <GridImage src={image.src} alt={`Grid ${index + 1}`} />
-        </ImageCard>
-      ))} */}
+}) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<ImageGridSection["data"]["images"][0] | null>(null);
 
-      {data?.images?.map((image, index) =>
-        variant === "primary" ? (
-          <ImageCard
-            key={index}
-            whileHover="hover"
-            initial="initial"
-            viewport={{ once: true }}
-          >
-            <Image
-              src={image.src}
-              alt={image.title}
-              loading={index === 0 ? "eager" : "lazy"}
-              variants={imageVariants}
-            />
-            <Overlay variants={overlayVariants}>
-              <Title className="!text-white" variants={titleVariants}>
-                {image.title}
-              </Title>
-              {image.description && (
-                <Description
-                  className="!text-white line-clamp-1 text-ellipsis"
-                  variants={titleVariants}
-                >
-                  {image.description}
-                </Description>
-              )}
-            </Overlay>
-          </ImageCard>
-        ) : (
-          <ServiceCard
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <img src={image.src} alt={image.title} />
-            <h4>{image.title}</h4>
-            <p className="line-clamp-2 text-ellipsis">{image.description}</p>
-          </ServiceCard>
-        )
-      )}
-    </ImageGrid>
-  </ImageGridWrapper>
-);
+  return (
+    <div>
+      <ImageGridWrapper
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={staggerChildren}
+    >
+      <TextHeading>{data.caption || data?.title}</TextHeading>
+      <ImageGrid>
+        {data?.images?.map((image, index) =>
+          variant === "primary" ? (
+            <ImageCard
+              key={index}
+              whileHover="hover"
+              initial="initial"
+              viewport={{ once: true }}
+              onClick={() => {
+                setSelectedImage(image);
+                setIsModalOpen(true);
+              }}
+            >
+              <Image
+                src={image.src}
+
+                alt={image.title}
+                loading={index === 0 ? "eager" : "lazy"}
+                variants={imageVariants}
+              />
+              <Overlay variants={overlayVariants}>
+                <Title className="!text-white" variants={titleVariants}>
+                  {image.title}
+                </Title>
+                {image.description && (
+                  <Description
+                    className="!text-white line-clamp-1 text-ellipsis"
+                    variants={titleVariants}
+                  >
+                    {image.description}
+                  </Description>
+                )}
+              </Overlay>
+            </ImageCard>
+          ) : (
+            <ServiceCard
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              onClick={() => {
+                setSelectedImage(image);
+                setIsModalOpen(true);
+              }}
+            >
+              <img src={image.src} alt={image.title} />
+              <h4>{image.title}</h4>
+
+              <p className="line-clamp-2 text-ellipsis">{image.description}</p>
+            </ServiceCard>
+          )
+        )}
+      </ImageGrid>
+    </ImageGridWrapper>
+    <ServiceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={selectedImage?.title||""}
+        description={selectedImage?.description||""}
+        image={selectedImage?.src||""}
+      />  
+    </div>
+  );
+}
 
 export const ListSectionContainer = ({
   data,

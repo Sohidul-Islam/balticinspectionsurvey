@@ -12,7 +12,11 @@ import ContentPreviewSecondary from "../components/ContentPreviewSecondary";
 
 const Container = styled.div`
   padding: 2rem;
+  @media (max-width: 768px) {
+    padding: 0rem;
+  }
 `;
+
 
 const ContentEditPage = () => {
   const { contentId } = useParams();
@@ -57,8 +61,8 @@ const ContentEditPage = () => {
   return (
     <Container>
       <h1>Edit Content</h1>
-      <div className="grid grid-cols-1  md:grid-cols-3 gap-x-4">
-        <div className="col-span-2">
+      <div className="grid grid-cols-1  lg:grid-cols-3 gap-x-4">
+        <div className="col-span-1 lg:col-span-2">
           <ContentEditor
             onSave={handleSave}
             initialContent={{
