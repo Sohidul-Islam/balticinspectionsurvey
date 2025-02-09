@@ -130,7 +130,8 @@ const Footer = () => {
 
       <FooterBottom>
         <Copyright>
-          © {new Date().getFullYear()} Your Company. All rights reserved.
+          © {new Date().getFullYear()} Baltic Inspection Survey Company. All
+          rights reserved.
         </Copyright>
         <BottomLinks>
           <BottomLink to="/privacy">Privacy Policy</BottomLink>

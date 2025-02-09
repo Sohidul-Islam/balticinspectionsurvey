@@ -18,6 +18,8 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
   const paragraphs = data.description.split("\n\n");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [selectedData, setSelectedData] = useState(null);
+
   const ref = useRef(null);
   const onClickScrollViewRef = () => {
     setIsModalOpen(true);
@@ -47,7 +49,7 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             onHoverStart={() => setHoveredImage(1)}
-            onHoverEnd={() => setHoveredImage(null)}
+            // onHoverEnd={() => setHoveredImage(null)}
           >
             <ImageContainer>
               <StyledImage src={data.image1} alt="Main Image" />
@@ -81,7 +83,7 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 * (index + 1) }}
                 onHoverStart={() => setHoveredImage(index + 2)}
-                onHoverEnd={() => setHoveredImage(null)}
+                // onHoverEnd={() => setHoveredImage(null)}
               >
                 <ImageContainer>
                   <StyledImage src={image} alt={`Side Image ${index + 1}`} />
@@ -127,7 +129,7 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
         onClose={() => setIsModalOpen(false)}
         title={data.title}
         description={data.description}
-        image={data.image1}
+        image={data[`image${hoveredImage || 1}` as keyof typeof data]}
       />
     </Container>
   );
@@ -150,31 +152,36 @@ const Header = styled(motion.div)`
 `;
 
 const Title = styled.h2`
-  font-size: 3.5rem;
-  color: #1a1a1a;
-  margin-bottom: 1rem;
-  font-weight: 800;
-  letter-spacing: -1px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
 
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
   }
 `;
 
 const SubTitle = styled.p`
   font-size: 1.2rem;
-  color: #666;
-  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
 `;
 
 const GalleryGrid = styled.div`
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  gap: 2rem;
-  margin-bottom: 4rem;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 `;
 
@@ -186,24 +193,30 @@ const ImageWrapper = styled(motion.div)`
 `;
 
 const MainImageWrapper = styled(ImageWrapper)`
-  height: 600px;
+  height: 500px;
 
-  @media (max-width: 1024px) {
-    height: 400px;
+  @media (max-width: 768px) {
+    height: 300px;
   }
 `;
 
 const SideImagesContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
 `;
 
 const SideImageWrapper = styled(ImageWrapper)`
-  height: 290px;
+  height: 240px;
 
-  @media (max-width: 1024px) {
-    height: 300px;
+  @media (max-width: 768px) {
+    height: 200px;
   }
 `;
 
@@ -211,6 +224,7 @@ const ImageContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  border-radius: 20px;
   overflow: hidden;
 `;
 
@@ -218,59 +232,56 @@ const StyledImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.215, 0.61, 0.355, 1);
-
-  ${ImageContainer}:hover & {
-    transform: scale(1.05);
-  }
+  transition: transform 0.3s ease;
 `;
 
 const OverlayMotion = styled(motion.div)`
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.7) 100%
-  );
-  display: flex;
-  align-items: flex-end;
-  padding: 2.5rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const OverlayContent = styled.div`
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: white;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 `;
 
 const ImageNumber = styled.span`
-  font-size: 2.5rem;
-  font-weight: 700;
-  opacity: 0.9;
-  font-family: "Playfair Display", serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const ViewDetailsButton = styled.button`
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: white;
-  padding: 0.8rem 1.5rem;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
   cursor: pointer;
-  backdrop-filter: blur(5px);
-  transition: all 0.3s ease;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateX(5px);
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
   }
 `;
 
@@ -284,18 +295,24 @@ const Arrow = styled.span`
 `;
 
 const TextContent = styled(motion.div)`
-  margin: 1.5rem auto 0;
+  max-width: 800px;
+  padding: 0 1rem;
+  // margin: 3rem auto;
+
+  // @media (max-width: 768px) {
+  //   margin: 2rem auto;
+  // }
 `;
 
 const Description = styled.p`
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #4a4a4a;
+  color: #4a5568;
   margin-bottom: 1.5rem;
-  white-space: pre-wrap;
 
-  &:last-child {
-    margin-bottom: 0;
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    line-height: 1.6;
   }
 `;
 
