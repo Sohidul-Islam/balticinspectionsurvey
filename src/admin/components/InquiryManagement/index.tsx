@@ -5,13 +5,27 @@ import moment from "moment";
 import {
   useInquiries,
   useUpdateInquiryStatus,
+  useDeleteInquiry
 } from "../../../hooks/useInquiry";
-import { FaFile, FaSyncAlt, FaTimes } from "react-icons/fa";
+import { FaFile, FaSyncAlt, FaTimes, FaTrash } from "react-icons/fa";
+
+const DeleteButton = styled.button`
+  background: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+`;
+
+const DeleteIcon = styled(FaTrash)`
+  color: #3b82f6;
+`;
 
 interface DetailModalProps {
   inquiry: any;
   onClose: () => void;
 }
+
 
 const DetailModal: React.FC<DetailModalProps> = ({ inquiry, onClose }) => (
   <ModalOverlay onClick={onClose}>
@@ -95,7 +109,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ inquiry, onClose }) => (
                 </DetailLabel>
                 <DetailValue>
                   {inquiry.companyName || "Not provided"}
-                </DetailValue>
+                </DetailValue>  
               </DetailItem>
               <DetailItem>
                 <DetailLabel>
@@ -125,10 +139,18 @@ const InquiryManagement = () => {
   const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
   const { data: inquiries, isLoading, refetch } = useInquiries();
   const { mutate: updateStatus } = useUpdateInquiryStatus();
+  const { mutate: deleteInquiry } = useDeleteInquiry();
+
 
   const handleStatusUpdate = (id: string, status: string) => {
     updateStatus({ id, status });
   };
+
+  const handleDelete = (id: string) => {
+    deleteInquiry(id);
+  };
+
+
 
   return (
     <Container>
@@ -174,7 +196,7 @@ const InquiryManagement = () => {
                         {inquiry.status || "pending"}
                       </StatusBadge>
                     </Td>
-                    <Td onClick={(e) => e.stopPropagation()}>
+                    <Td className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <ActionButtons>
                         <StatusSelect
                           value={inquiry.status || "pending"}
@@ -187,8 +209,14 @@ const InquiryManagement = () => {
                           <option value="completed">Completed</option>
                         </StatusSelect>
                       </ActionButtons>
+                      <DeleteButton className="flex items-center justify-center" onClick={() => handleDelete(inquiry.id)}>
+                        <DeleteIcon />
+                      </DeleteButton>
+
                     </Td>
+
                   </TableRow>
+
                 ))}
             </tbody>
           </Table>

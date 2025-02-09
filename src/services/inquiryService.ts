@@ -40,7 +40,7 @@ export const inquiryApi = {
     return response.data;
   },
   delete: async (id: string): Promise<void> => {
-    const response = await axiosInstance.delete(`/api/inquiry/delete/${id}`);
+    const response = await axiosInstance.post(`/api/inquiry/delete/${id}`);
     return response.data;
   },
   updateInquiryStatus: async (

@@ -37,3 +37,21 @@ export const useUpdateInquiryStatus = () => {
     },
   });
 };
+
+export const useDeleteInquiry = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => inquiryApi.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["inquiries"] });
+
+      toast.success("Inquiry deleted successfully");
+
+    },  
+    onError: () => {
+      toast.error("Failed to delete inquiry");
+    },
+  });
+
+};
