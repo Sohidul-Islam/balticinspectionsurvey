@@ -300,9 +300,13 @@ const ContactPage = () => {
 const Container = styled.div`
   min-height: 100vh;
   background: #f8fafc;
-  padding: 6rem 2rem;
+  padding: 6rem 1rem;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 4rem 1rem;
+  }
 `;
 
 const BackgroundShape = styled.div`
@@ -350,6 +354,10 @@ const HeroTitle = styled.h1`
   @media (max-width: 768px) {
     font-size: 2.5rem;
   }
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
 `;
 
 const HeroSubtitle = styled.p`
@@ -357,6 +365,10 @@ const HeroSubtitle = styled.p`
   color: #64748b;
   max-width: 600px;
   margin: 0 auto;
+
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const CardGrid = styled.div`
@@ -365,8 +377,14 @@ const CardGrid = styled.div`
   gap: 2rem;
   margin-bottom: 4rem;
 
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
   }
 `;
 
@@ -380,6 +398,10 @@ const ContactCard = styled(motion.div)`
 
   &:hover {
     transform: translateY(-5px);
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
   }
 `;
 
@@ -405,6 +427,10 @@ const FormSection = styled(motion.div)`
   padding: 3rem;
   border-radius: 30px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+
+  @media (max-width: 768px) {
+    padding: 2rem 1.5rem;
+  }
 `;
 
 const FormContainer = styled.form`
@@ -418,8 +444,13 @@ const FormGrid = styled.div`
   gap: 2rem;
   margin-bottom: 2rem;
 
+  @media (max-width: 1024px) {
+    gap: 1.5rem;
+  }
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 
   .full-width {
@@ -454,6 +485,7 @@ const Input = styled.input`
   font-size: 1rem;
   transition: all 0.3s ease;
   background: #f8fafc;
+  width: 100%;
 
   &:focus {
     outline: none;
@@ -465,6 +497,11 @@ const Input = styled.input`
   &::placeholder {
     color: #94a3b8;
   }
+
+  @media (max-width: 480px) {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+  }
 `;
 
 const Select = styled.select`
@@ -475,12 +512,18 @@ const Select = styled.select`
   background: #f8fafc;
   cursor: pointer;
   transition: all 0.3s ease;
+  width: 100%;
 
   &:focus {
     outline: none;
     border-color: #2563eb;
     background: white;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
   }
 `;
 
@@ -556,7 +599,14 @@ const SubmitButton = styled.button`
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
   }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
 `;
+
 
 const ButtonIcon = styled.i`
   font-size: 1.1rem;
