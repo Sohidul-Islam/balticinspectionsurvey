@@ -196,26 +196,16 @@ const InquiryManagement = () => {
       </Header>
 
       <FilterSection>
-        {/* <SearchContainer>
-          <SearchIcon className="fas fa-search" />
-          <SearchInput
-            type="text"
-            placeholder="Search by name, email, company..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </SearchContainer> */}
-
         <FilterContainer className="flex flex-wrap gap-2">
           <FilterGroup className="flex-1">
             <SearchContainer className="w-full flex items-center gap-2">
-              <SearchIcon className="fas fa-search" />
+              <SearchIcon />
               <SearchInput
-            type="text"
-            placeholder="Search by name, email, company..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            />
+                type="text"
+                placeholder="Search by name, email, company..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </SearchContainer>
           </FilterGroup>
           <FilterGroup>
@@ -274,62 +264,61 @@ const InquiryManagement = () => {
           <ResultCount>
             Showing {filteredInquiries.length} of {inquiries?.length || 0} inquiries
           </ResultCount>
-
-          <ResponsiveTableContainer>
-            <Table>
-              <thead>
-                <tr>
-                  <Th>Date</Th>
-                  <Th>Type</Th>
-                  <Th>Name</Th>
-                  <Th hideOnMobile>Email</Th>
-                  <Th hideOnMobile>Company</Th>
-                  <Th>Status</Th>
-                  <Th>Actions</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {Array.isArray(filteredInquiries) &&
-                  filteredInquiries?.map((inquiry) => (
-                    <TableRow
-                      key={inquiry.id}
-                      onClick={() => setSelectedInquiry(inquiry)}
-                    >
-                      <Td>{moment(inquiry.createdAt).format("MMM DD, YYYY")}</Td>
-                      <Td>{inquiry.inquiryType}</Td>
-                      <Td>{`${inquiry.firstName} ${inquiry.lastName}`}</Td>
-                      <Td hideOnMobile>{inquiry.email}</Td>
-                      <Td hideOnMobile>{inquiry.companyName || "-"}</Td>
-                      <Td>
-                        <StatusBadge status={inquiry.status || "pending"}>
-                          {inquiry.status || "pending"}
-                        </StatusBadge>
-                      </Td>
-                      <Td className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                        <ActionButtons>
-                          <StatusSelect
-                            value={inquiry.status || "pending"}
-                            onChange={(e) =>
-                              handleStatusUpdate(inquiry.id, e.target.value)
-                            }
-                          >
-                            <option value="pending">Pending</option>
-                            <option value="processed">Processed</option>
-                            <option value="completed">Completed</option>
-                          </StatusSelect>
-                        </ActionButtons>
-                        <DeleteButton className="flex items-center justify-center" onClick={() => handleDelete(inquiry.id)}>
-                          <DeleteIcon />
-                        </DeleteButton>
-
-                      </Td>
-
-                    </TableRow>
-
-                  ))}
-              </tbody>
-            </Table>
-          </ResponsiveTableContainer>
+          
+          <TableWrapper>
+            <ResponsiveTableContainer>
+              <Table>
+                <thead>
+                  <tr>
+                    <Th width="100px">Date</Th>
+                    <Th width="120px">Type</Th>
+                    <Th width="150px">Name</Th>
+                    <Th hideOnMobile width="200px">Email</Th>
+                    <Th hideOnMobile width="150px">Company</Th>
+                    <Th width="100px">Status</Th>
+                    <ActionColumnHeader>Actions</ActionColumnHeader>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(filteredInquiries) &&
+                    filteredInquiries?.map((inquiry) => (
+                      <TableRow
+                        key={inquiry.id}
+                        onClick={() => setSelectedInquiry(inquiry)}
+                      >
+                        <Td width="100px">{moment(inquiry.createdAt).format("MMM DD, YYYY")}</Td>
+                        <Td width="120px">{inquiry.inquiryType}</Td>
+                        <Td width="150px">{`${inquiry.firstName} ${inquiry.lastName}`}</Td>
+                        <Td hideOnMobile width="200px">{inquiry.email}</Td>
+                        <Td hideOnMobile width="150px">{inquiry.companyName || "-"}</Td>
+                        <Td width="100px">
+                          <StatusBadge status={inquiry.status || "pending"}>
+                            {inquiry.status || "pending"}
+                          </StatusBadge>
+                        </Td>
+                        <ActionColumn onClick={(e) => e.stopPropagation()}>
+                          <ActionButtons>
+                            <StatusSelect
+                              value={inquiry.status || "pending"}
+                              onChange={(e) =>
+                                handleStatusUpdate(inquiry.id, e.target.value)
+                              }
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="processed">Processed</option>
+                              <option value="completed">Completed</option>
+                            </StatusSelect>
+                            <DeleteButton className="flex items-center justify-center" onClick={() => handleDelete(inquiry.id)}>
+                              <DeleteIcon />
+                            </DeleteButton>
+                          </ActionButtons>
+                        </ActionColumn>
+                      </TableRow>
+                    ))}
+                </tbody>
+              </Table>
+            </ResponsiveTableContainer>
+          </TableWrapper>
         </>
       )}
 
@@ -344,14 +333,34 @@ const InquiryManagement = () => {
 };
 
 const Container = styled.div`
-  padding: 2rem;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  overflow-x: hidden;
+  
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 `;
 
 const Header = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: white;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 0;
+    background: transparent;
+  }
 `;
 
 const Title = styled.h2`
@@ -379,21 +388,36 @@ const TableContainer = styled.div`
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.875rem;
+  table-layout: fixed;
+
+  @media (min-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
-const Th = styled.th<{ hideOnMobile?: boolean }>`
-  padding: 1rem;
+const Th = styled.th<{ hideOnMobile?: boolean; width?: string }>`
+  padding: 0.75rem;
   text-align: left;
   background: #f8f9fa;
   border-bottom: 2px solid #dee2e6;
+  white-space: nowrap;
+  width: ${props => props.width || 'auto'};
+  min-width: ${props => props.width || 'auto'};
 
-  @media (max-width: 768px) {
+  @media (min-width: 768px) {
+    padding: 1rem;
+  }
+
+  @media (max-width: 767px) {
     ${(props) =>
       props.hideOnMobile &&
       `
@@ -402,11 +426,20 @@ const Th = styled.th<{ hideOnMobile?: boolean }>`
   }
 `;
 
-const Td = styled.td<{ hideOnMobile?: boolean }>`
-  padding: 1rem;
+const Td = styled.td<{ hideOnMobile?: boolean; width?: string }>`
+  padding: 0.75rem;
   border-bottom: 1px solid #dee2e6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: ${props => props.width || 'auto'};
+  min-width: ${props => props.width || 'auto'};
 
-  @media (max-width: 768px) {
+  @media (min-width: 768px) {
+    padding: 1rem;
+  }
+
+  @media (max-width: 767px) {
     ${(props) =>
       props.hideOnMobile &&
       `
@@ -444,6 +477,7 @@ const StatusBadge = styled.span<{ status: string }>`
 const ActionButtons = styled.div`
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 `;
 
 const StatusSelect = styled.select`
@@ -451,6 +485,8 @@ const StatusSelect = styled.select`
   border: 1px solid #dee2e6;
   border-radius: 4px;
   background: white;
+  font-size: 0.875rem;
+  max-width: 120px;
 `;
 
 const LoadingWrapper = styled.div`
@@ -478,9 +514,49 @@ const LoadingSpinner = styled.div`
 `;
 
 const ResponsiveTableContainer = styled(TableContainer)`
+  margin: 0;
+  border-radius: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+  table {
+    width: 100%;
+  }
+`;
+
+const TableWrapper = styled.div`
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: white;
+  position: relative;
+  margin: 0;
+  padding: 0;
+
+  @media (min-width: 768px) {
+    border-radius: 8px;
+  }
+
   @media (max-width: 768px) {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    max-width: 700px;
+  }
+  
+  @media (max-width: 480px) {
+    max-width: 450px;
+  }
+
+  @media (max-width: 400px) {
+    max-width: 350px;
+  }
+`;
+
+
+const ResultCount = styled.div`
+  margin: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #64748b;
+
+  @media (min-width: 768px) {
+    margin: 0 0 1rem 0;
   }
 `;
 
@@ -500,12 +576,18 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   background: #f8fafc;
   border-radius: 16px;
-  width: 90%;
+  width: 95%;
   max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
+  margin: 1rem;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  @media (min-width: 768px) {
+    width: 90%;
+    margin: 0;
+  }
 `;
 
 const ModalHeader = styled.div`
@@ -559,8 +641,14 @@ const TopSection = styled.div`
 
 const StatusContainer = styled.div`
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
 `;
 
 const LargeStatusBadge = styled(StatusBadge)`
@@ -620,8 +708,13 @@ const DetailCard = styled.div`
 
 const DetailGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
 `;
 
 const DetailItem = styled.div`
@@ -659,11 +752,18 @@ const MessageContent = styled.div`
   white-space: pre-wrap;
 `;
 
+
 const FilterSection = styled.div`
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  padding: 0 1rem;
+
+  @media (min-width: 768px) {
+    margin-bottom: 2rem;
+    padding: 0;
+  }
 `;
 
 const SearchContainer = styled.div`
@@ -696,16 +796,26 @@ const SearchInput = styled.input`
 
 const FilterContainer = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  flex-wrap: wrap;
-  align-items: flex-end;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
 `;
 
 const FilterGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  min-width: 200px;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    min-width: 200px;
+    width: auto;
+  }
 `;
 
 const FilterLabel = styled.label`
@@ -732,8 +842,13 @@ const FilterSelect = styled.select`
 
 const DateInputGroup = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 0.5rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+  }
 `;
 
 const DateInput = styled.input`
@@ -743,7 +858,12 @@ const DateInput = styled.input`
   font-size: 1rem;
   background: white;
   transition: all 0.3s ease;
-  min-width: 150px;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    min-width: 150px;
+    width: auto;
+  }
 
   &:focus {
     outline: none;
@@ -777,10 +897,41 @@ const ClearFiltersButton = styled.button`
   }
 `;
 
-const ResultCount = styled.div`
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-  color: #64748b;
+const ActionColumn = styled(Td)`
+  width: 200px;
+  min-width: 200px;
+  white-space: nowrap;
+  // position: sticky;
+  right: 0;
+  background: white;
+  z-index: 1;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+
+
+
+  &:hover {
+    background: #f8f9fa;
+  }
+
 `;
+
+const ActionColumnHeader = styled(Th)`
+  width: 200px;
+  min-width: 200px;
+  white-space: nowrap;
+  // position: sticky;
+  right: 0;
+  background: #f8f9fa;
+  z-index: 2;
+  // box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+
+
+
+
+
+`;
+
+
+
 
 export default InquiryManagement;
