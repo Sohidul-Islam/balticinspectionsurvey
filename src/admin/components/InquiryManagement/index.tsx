@@ -7,7 +7,7 @@ import {
   useUpdateInquiryStatus,
   useDeleteInquiry
 } from "../../../hooks/useInquiry";
-import { FaFile, FaSyncAlt, FaTimes, FaTrash } from "react-icons/fa";
+import { FaFile, FaSearch, FaSyncAlt, FaTimes, FaTrash } from "react-icons/fa";
 
 const DeleteButton = styled.button`
   background: #f1f5f9;
@@ -137,10 +137,44 @@ const DetailModal: React.FC<DetailModalProps> = ({ inquiry, onClose }) => (
 
 const InquiryManagement = () => {
   const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dateRange, setDateRange] = useState({
+    startDate: "",
+    endDate: "",
+  });
+
   const { data: inquiries, isLoading, refetch } = useInquiries();
   const { mutate: updateStatus } = useUpdateInquiryStatus();
   const { mutate: deleteInquiry } = useDeleteInquiry();
 
+  // Filter and search logic
+  const filteredInquiries = React.useMemo(() => {
+    if (!Array.isArray(inquiries)) return [];
+
+    return inquiries.filter((inquiry) => {
+      const matchesSearch =
+        searchTerm === "" ||
+        `${inquiry.firstName} ${inquiry.lastName}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        inquiry.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        inquiry.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        inquiry.inquiryType.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesStatus =
+        statusFilter === "all" || inquiry.status === statusFilter;
+
+      const inquiryDate = moment(inquiry.createdAt);
+      const matchesDateRange =
+        (!dateRange.startDate ||
+          inquiryDate.isSameOrAfter(moment(dateRange.startDate))) &&
+        (!dateRange.endDate ||
+          inquiryDate.isSameOrBefore(moment(dateRange.endDate)));
+
+      return matchesSearch && matchesStatus && matchesDateRange;
+    });
+  }, [inquiries, searchTerm, statusFilter, dateRange]);
 
   const handleStatusUpdate = (id: string, status: string) => {
     updateStatus({ id, status });
@@ -161,66 +195,142 @@ const InquiryManagement = () => {
         </RefreshButton>
       </Header>
 
+      <FilterSection>
+        {/* <SearchContainer>
+          <SearchIcon className="fas fa-search" />
+          <SearchInput
+            type="text"
+            placeholder="Search by name, email, company..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </SearchContainer> */}
+
+        <FilterContainer className="flex flex-wrap gap-2">
+          <FilterGroup className="flex-1">
+            <SearchContainer className="w-full flex items-center gap-2">
+              <SearchIcon className="fas fa-search" />
+              <SearchInput
+            type="text"
+            placeholder="Search by name, email, company..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            </SearchContainer>
+          </FilterGroup>
+          <FilterGroup>
+            <FilterLabel>Status</FilterLabel>
+
+            <FilterSelect
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="processed">Processed</option>
+              <option value="completed">Completed</option>
+            </FilterSelect>
+          </FilterGroup>
+
+          <FilterGroup>
+            <FilterLabel>Date Range</FilterLabel>
+            <DateInputGroup>
+              <DateInput
+                type="date"
+                value={dateRange.startDate}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, startDate: e.target.value })
+                }
+              />
+              <DateSeparator>to</DateSeparator>
+              <DateInput
+                type="date"
+                value={dateRange.endDate}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, endDate: e.target.value })
+                }
+              />
+            </DateInputGroup>
+          </FilterGroup>
+
+          <ClearFiltersButton
+            onClick={() => {
+              setSearchTerm("");
+              setStatusFilter("all");
+              setDateRange({ startDate: "", endDate: "" });
+            }}
+          >
+            <i className="fas fa-times" /> Clear Filters
+          </ClearFiltersButton>
+        </FilterContainer>
+      </FilterSection>
+
       {isLoading ? (
         <LoadingWrapper>
           <LoadingSpinner />
         </LoadingWrapper>
       ) : (
-        <ResponsiveTableContainer>
-          <Table>
-            <thead>
-              <tr>
-                <Th>Date</Th>
-                <Th>Type</Th>
-                <Th>Name</Th>
-                <Th hideOnMobile>Email</Th>
-                <Th hideOnMobile>Company</Th>
-                <Th>Status</Th>
-                <Th>Actions</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.isArray(inquiries) &&
-                inquiries?.map((inquiry) => (
-                  <TableRow
-                    key={inquiry.id}
-                    onClick={() => setSelectedInquiry(inquiry)}
-                  >
-                    <Td>{moment(inquiry.createdAt).format("MMM DD, YYYY")}</Td>
-                    <Td>{inquiry.inquiryType}</Td>
-                    <Td>{`${inquiry.firstName} ${inquiry.lastName}`}</Td>
-                    <Td hideOnMobile>{inquiry.email}</Td>
-                    <Td hideOnMobile>{inquiry.companyName || "-"}</Td>
-                    <Td>
-                      <StatusBadge status={inquiry.status || "pending"}>
-                        {inquiry.status || "pending"}
-                      </StatusBadge>
-                    </Td>
-                    <Td className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                      <ActionButtons>
-                        <StatusSelect
-                          value={inquiry.status || "pending"}
-                          onChange={(e) =>
-                            handleStatusUpdate(inquiry.id, e.target.value)
-                          }
-                        >
-                          <option value="pending">Pending</option>
-                          <option value="processed">Processed</option>
-                          <option value="completed">Completed</option>
-                        </StatusSelect>
-                      </ActionButtons>
-                      <DeleteButton className="flex items-center justify-center" onClick={() => handleDelete(inquiry.id)}>
-                        <DeleteIcon />
-                      </DeleteButton>
+        <>
+          <ResultCount>
+            Showing {filteredInquiries.length} of {inquiries?.length || 0} inquiries
+          </ResultCount>
 
-                    </Td>
+          <ResponsiveTableContainer>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>Date</Th>
+                  <Th>Type</Th>
+                  <Th>Name</Th>
+                  <Th hideOnMobile>Email</Th>
+                  <Th hideOnMobile>Company</Th>
+                  <Th>Status</Th>
+                  <Th>Actions</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(filteredInquiries) &&
+                  filteredInquiries?.map((inquiry) => (
+                    <TableRow
+                      key={inquiry.id}
+                      onClick={() => setSelectedInquiry(inquiry)}
+                    >
+                      <Td>{moment(inquiry.createdAt).format("MMM DD, YYYY")}</Td>
+                      <Td>{inquiry.inquiryType}</Td>
+                      <Td>{`${inquiry.firstName} ${inquiry.lastName}`}</Td>
+                      <Td hideOnMobile>{inquiry.email}</Td>
+                      <Td hideOnMobile>{inquiry.companyName || "-"}</Td>
+                      <Td>
+                        <StatusBadge status={inquiry.status || "pending"}>
+                          {inquiry.status || "pending"}
+                        </StatusBadge>
+                      </Td>
+                      <Td className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                        <ActionButtons>
+                          <StatusSelect
+                            value={inquiry.status || "pending"}
+                            onChange={(e) =>
+                              handleStatusUpdate(inquiry.id, e.target.value)
+                            }
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="processed">Processed</option>
+                            <option value="completed">Completed</option>
+                          </StatusSelect>
+                        </ActionButtons>
+                        <DeleteButton className="flex items-center justify-center" onClick={() => handleDelete(inquiry.id)}>
+                          <DeleteIcon />
+                        </DeleteButton>
 
-                  </TableRow>
+                      </Td>
 
-                ))}
-            </tbody>
-          </Table>
-        </ResponsiveTableContainer>
+                    </TableRow>
+
+                  ))}
+              </tbody>
+            </Table>
+          </ResponsiveTableContainer>
+        </>
       )}
 
       {selectedInquiry && (
@@ -547,6 +657,130 @@ const MessageContent = styled.div`
   line-height: 1.7;
   font-size: 1.05rem;
   white-space: pre-wrap;
+`;
+
+const FilterSection = styled.div`
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const SearchContainer = styled.div`
+  position: relative;
+`;
+
+const SearchIcon = styled(FaSearch)`
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 2.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const FilterContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+`;
+
+const FilterGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+`;
+
+const FilterLabel = styled.label`
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+`;
+
+const FilterSelect = styled.select`
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const DateInputGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const DateInput = styled.input`
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+  min-width: 150px;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const DateSeparator = styled.span`
+  color: #64748b;
+  font-size: 0.875rem;
+`;
+
+const ClearFiltersButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 12px;
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+  }
+`;
+
+const ResultCount = styled.div`
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #64748b;
 `;
 
 export default InquiryManagement;
