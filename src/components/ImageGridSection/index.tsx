@@ -20,13 +20,13 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const ref = useRef(null);
-  const onClickScrollViewRef = () => {
-    setIsModalOpen(true);
-    (ref.current as unknown as HTMLElement)?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-    });
-  };
+  // const onClickScrollViewRef = () => {
+  //   setIsModalOpen(true);
+  //   (ref.current as unknown as HTMLElement)?.scrollIntoView({
+  //     behavior: "smooth",
+  //     block: "nearest",
+  //   });
+  // };
 
   return (
     <Container>
@@ -62,10 +62,10 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
                   >
                     <OverlayContent>
                       <ImageNumber>01</ImageNumber>
-                      <ViewDetailsButton onClick={onClickScrollViewRef}>
+                      {/* <ViewDetailsButton onClick={onClickScrollViewRef}>
                         <span>View Details</span>
                         <Arrow>→</Arrow>
-                      </ViewDetailsButton>
+                      </ViewDetailsButton> */}
                     </OverlayContent>
                   </OverlayMotion>
                 )}
@@ -96,10 +96,10 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
                       >
                         <OverlayContent>
                           <ImageNumber>{`0${index + 2}`}</ImageNumber>
-                          <ViewDetailsButton onClick={onClickScrollViewRef}>
+                          {/* <ViewDetailsButton onClick={onClickScrollViewRef}>
                             <span>View Details</span>
                             <Arrow>→</Arrow>
-                          </ViewDetailsButton>
+                          </ViewDetailsButton> */}
                         </OverlayContent>
                       </OverlayMotion>
                     )}
@@ -135,7 +135,7 @@ const ImageGridSection: React.FC<ImageGridSectionProps> = ({ data }) => {
 };
 
 const Container = styled.section`
-  padding: 8rem 2rem;
+  padding: 4rem 2rem;
   background: #ffffff;
   overflow: hidden;
 `;
@@ -269,43 +269,42 @@ const ImageNumber = styled.span`
   }
 `;
 
-const ViewDetailsButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
+// const ViewDetailsButton = styled.button`
+//   display: flex;
+//   align-items: center;
+//   gap: 0.5rem;
+//   background: none;
+//   border: none;
+//   color: white;
+//   font-size: 1rem;
+//   cursor: pointer;
 
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
-  }
-`;
+//   @media (max-width: 768px) {
+//     font-size: 0.9rem;
+//   }
+// `;
 
-const Arrow = styled.span`
-  font-size: 1.2rem;
-  transition: transform 0.3s ease;
+// const Arrow = styled.span`
+//   font-size: 1.2rem;
+//   transition: transform 0.3s ease;
 
-  ${ViewDetailsButton}:hover & {
-    transform: translateX(3px);
-  }
-`;
+//   ${ViewDetailsButton}:hover & {
+//     transform: translateX(3px);
+//   }
+// `;
 
 const TextContent = styled(motion.div)`
-  max-width: 800px;
-  padding: 0 1rem;
-  // margin: 3rem auto;
+  // padding: 0 1rem;
+  margin: 3rem auto;
 
-  // @media (max-width: 768px) {
-  //   margin: 2rem auto;
-  // }
+  @media (max-width: 768px) {
+    margin: 2rem auto;
+  }
 `;
 
 const Description = styled.p`
   font-size: 1.1rem;
-  line-height: 1rem;
+  line-height: 1.85rem;
   color: #4a5568;
   margin-bottom: 1.5rem;
 

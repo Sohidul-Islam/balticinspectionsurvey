@@ -30,7 +30,7 @@ const PreviewTitle = styled.h2`
   }
 `;
 
-const SectionPreview = styled.div`
+export const SectionPreview = styled.div`
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
@@ -53,7 +53,7 @@ const SectionPreview = styled.div`
   }
 `;
 
-const SectionType = styled.div`
+export const SectionType = styled.div`
   font-size: 0.9rem;
   color: #6b7280;
   text-transform: uppercase;

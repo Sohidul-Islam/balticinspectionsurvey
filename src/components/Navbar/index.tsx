@@ -89,7 +89,7 @@ const MenuItem = styled.div`
 `;
 
 const MenuTitle = styled(motion.div)`
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #2d3436;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -207,7 +207,7 @@ const MobileMenu = styled(motion.div)`
   top: 0;
   right: 0;
   bottom: 0;
-  width: 300px;
+  width: min(90vw,400px);
   background: white;
   padding: 2rem;
   z-index: 1001;
@@ -217,11 +217,11 @@ const MobileMenu = styled(motion.div)`
 `;
 
 const MobileMenuItem = styled(motion.div)`
-  margin-bottom: 1rem;
+  margin-bottom: 0rem;
 `;
 
 const MobileMenuTitle = styled(Link)`
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   color: #2d3436;
   padding: 0.8rem;
   cursor: pointer;
@@ -247,7 +247,7 @@ const MobileMegaMenu = styled(motion.div)`
 `;
 
 const MobileMegaMenuTitle = styled(Link)`
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #636e72;
   padding: 0.8rem;
   cursor: pointer;
@@ -289,9 +289,10 @@ const Navbar = () => {
   const [mobileMenuId, setMobileMenuId] = useState<number | null>(null);
   const [expandedMenu, setExpandedMenu] = useState<number | null>(null);
   const [expandedMegaMenu, setExpandedMegaMenu] = useState<number | null>(null);
-
   const { data: menus, isLoading: isLoadingMenus } = useMenus();
-  const { data: megaMenus } = useMegaMenus(hoveredMenu || mobileMenuId || 0);
+  const { data: megaMenus } = useMegaMenus(hoveredMenu || expandedMenu || 0);
+  
+  console.log({mobileMenuId})
 
   useEffect(() => {
     const handleScroll = () => {
@@ -335,6 +336,8 @@ const Navbar = () => {
       </NavContainer>
     );
   }
+
+  console.log({megaMenus})
 
   return (
     <NavContainer scrolled={scrolled}>

@@ -10,7 +10,7 @@ import {
   FaEnvelope,
   FaArrowRight,
 } from "react-icons/fa";
-import Logo from "../assets/balticlogowhite.svg?react";
+import Logo from "../assets/balticlogo.svg?react";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../services/axios";
 import { parseIfJson } from "../utils";
@@ -59,7 +59,7 @@ const Footer = () => {
           <CompanyInfo>
             <LogoSection>
               <Logo width={100} height={100} />
-              <p>Building dreams, delivering excellence.</p>
+              <p>Quality meets reliability.</p>
             </LogoSection>
             <SocialLinks>
               <SocialIcon href="#" target="_blank">
@@ -269,8 +269,8 @@ const ContactItem = styled.div`
 `;
 
 const IconWrapper = styled.span`
-  width: 35px;
-  height: 35px;
+  min-width: 35px;
+  min-height: 35px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   display: flex;

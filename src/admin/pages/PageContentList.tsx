@@ -13,6 +13,8 @@ import {
   useSubMegaMenus,
 } from "../../services/menuApi";
 import { parseIfJson } from "../../utils";
+import { SectionPreview, SectionType } from "../components/ContentPreviewSecondary";
+import { sectionComponents } from "../../components/DynamicPage";
 
 const Container = styled.div`
   padding: 2rem;
@@ -98,15 +100,22 @@ const CreateButton = styled(Link)`
 
 const PageGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: 90vw; /* Single column by default (mobile first) */
   gap: 2rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 450px); /* Two columns with 450px width each on larger screens */
+    gap: 2rem; /* Adjust spacing between grid items */
+  }
 `;
+
 
 const PageCard = styled(motion.div)`
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
 `;
 
 const PageTitle = styled.h3`
@@ -174,12 +183,18 @@ const PageContentList = () => {
   const { data: pages } = useQuery<Content[]>({
     queryKey: ["pages", selectedMenu, selectedMegaMenu, selectedSubMenu],
     queryFn: async () => {
+      let params = {};
+    
+      if (selectedSubMenu) {
+        params = { subMegaMenuId: selectedSubMenu };
+      } else if (selectedMegaMenu) {
+        params = { megaMenuId: selectedMegaMenu };
+      } else if (selectedMenu) {
+        params = { menuId: selectedMenu };
+      }
+      
       const { data } = await axiosInstance.get("/api/content", {
-        params: {
-          menuId: selectedMenu,
-          megaMenuId: selectedMegaMenu,
-          subMegaMenuId: selectedSubMenu,
-        },
+        params: params
       });
       return data.data;
     },
@@ -286,8 +301,39 @@ const PageContentList = () => {
           >
             <PageTitle>{page.title}</PageTitle>
             <SectionCount>
-              {parseIfJson(page.sections).length} section
-              {parseIfJson(page.sections).length !== 1 ? "s" : ""}
+               
+                  <div
+                    // axis="y"
+                    // values={sections}
+                    // onReorder={(value) => onReorder?.(value)}
+                    style={{ padding: "0.5rem 0" }}
+                  >
+                    {parseIfJson(page.sections).map((section:any, index:number) => (
+                      <SectionPreview key={section.type + index}>
+                        <SectionType>{section.type}</SectionType>            
+                        <div
+                          style={{
+                            transform: "translate3d(0,0, 0)", // Very small 3D translation
+                            transition: "transform 0.3s ease", // Optional, for smooth transition
+                            maxWidth: "100%",
+                          }}
+                        >
+                          {(() => {
+                            const SectionComponent =
+                              sectionComponents[
+                                section?.type as keyof typeof sectionComponents
+                              ];
+                            return (
+                              <SectionComponent
+                                data={section.data as any}
+                                variant="secondary"
+                              />
+                            );
+                          })()}
+                        </div>
+                      </SectionPreview>
+                    ))}
+                  </div>
             </SectionCount>
             <ActionButtons>
               <ActionButton
